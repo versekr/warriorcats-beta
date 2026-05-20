@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Коты Воители</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>🐾 Коты Воители</h1>
+    <h2>Бета версия</h2>
+
+    <div id="start-screen">
+        <button onclick="createCharacter()">Создать нового кота</button>
+        <button onclick="loadGame()">Продолжить игру</button>
+    </div>
+
+    <div id="character-creation" style="display: none;">
+        <h2>Создание персонажа</h2>
+
+        <label>Имя кота:</label><br>
+        <input type="text" id="catName" placeholder="Например: Огнегрив"><br><br>
+
+        <label>Пол:</label><br>
+        <select id="catGender">
+            <option value="tom">Кот</option>
+            <option value="she-cat">Кошка</option>
+        </select><br><br>
+
+        <label>Окрас:</label><br>
+        <select id="catColor">
+            <option value="рыжий">Рыжий</option>
+            <option value="серый">Серый</option>
+            <option value="чёрный">Чёрный</option>
+            <option value="белый">Белый</option>
+            <option value="черепаховый">Черепаховый</option>
+            <option value="полосатый">Полосатый (коричневый)</option>
+        </select><br><br>
+
+        <button onclick="saveCharacter()">Создать кота и начать игру!</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

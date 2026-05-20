@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Лес - Коты Воители</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="forest">
+
+    <!-- Левая панель -->
+    <div class="left-panel">
+
+        <!-- Информация о коте -->
+        <div class="player-info">
+
+            <span id="cat-display"></span>
+
+            <div class="stats">
+
+                Здоровье:
+                <span id="health">100</span> |
+
+                Голод:
+                <span id="hunger">50</span> |
+
+                Энергия:
+                <span id="energy">80</span> |
+
+                Уровень:
+                <span id="level">1</span>
+
+                <br>
+
+                Сила:
+                <span id="strength">10</span> |
+
+                Ловкость:
+                <span id="agility">12</span>
+
+            </div>
+
+        </div>
+
+        <!-- Название локации -->
+        <div class="location-info">
+            Лес-01
+        </div>
+
+    </div>
+
+    <!-- Кот -->
+    <div id="cat-container">
+
+        <img id="cat"
+             src="images/cat.png">
+
+        <div id="cat-name"></div>
+
+    </div>
+
+    <!-- Правая панель -->
+    <div class="sidebar">
+
+        <!-- Кнопки -->
+        <div class="actions">
+
+            <button onclick="hunt()">
+                Охотиться
+            </button>
+
+            <button onclick="explore()">
+                Осмотреться
+            </button>
+
+            <button onclick="rest()">
+                Отдохнуть
+            </button>
+
+            <button onclick="goTo('camp.html')">
+                В лагерь
+            </button>
+
+            <button onclick="goTo('river.html')">
+                К реке
+            </button>
+
+        </div>
+
+        <!-- Лог -->
+        <div id="log" class="log"></div>
+
+        <!-- Чат -->
+        <div class="chat-container">
+
+            <div id="chat-messages"
+                 class="chat-messages">
+            </div>
+
+            <div class="chat-input">
+
+                <input type="text"
+                       id="chat-input"
+                       placeholder="Написать в чат..."
+                       maxlength="150">
+
+                <button onclick="sendChatMessage()">
+                    Отправить
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- JS -->
+    <script src="script.js"></script>
+
+    <script>
+
+        loadPlayerData();
+
+        updatePlayerDisplay();
+
+        updateCatName();
+
+        loadChat();
+
+        updateCatAppearance();
+    </script>
+
+</body>
+</html>
