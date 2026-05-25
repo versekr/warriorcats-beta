@@ -5,6 +5,7 @@
     <title>Коты Воители</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <h1>🐾 Коты Воители</h1>
     <h2>Бета версия</h2>
@@ -18,7 +19,7 @@
         <h2>Создание персонажа</h2>
 
         <label>Имя кота:</label><br>
-        <input type="text" id="catName" placeholder="Например: Огнегрив"><br><br>
+        <input type="text" id="catName"><br><br>
 
         <label>Пол:</label><br>
         <select id="catGender">
@@ -33,11 +34,31 @@
             <option value="чёрный">Чёрный</option>
             <option value="белый">Белый</option>
             <option value="черепаховый">Черепаховый</option>
-            <option value="полосатый">Полосатый (коричневый)</option>
+            <option value="полосатый">Полосатый</option>
         </select><br><br>
 
         <button onclick="saveCharacter()">Создать кота и начать игру!</button>
     </div>
+
+    <!-- 🔥 Firebase подключение -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+    <!-- ⚙️ Firebase ИНИЦИАЛИЗАЦИЯ -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOIaXVfnKNfezr6U6KN4E83nBld8pxg9U",
+            authDomain: "warriorcatsbeta-1116c.firebaseapp.com",
+            databaseURL: "https://warriorcatsbeta-1116c-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "warriorcatsbeta-1116c",
+            storageBucket: "warriorcatsbeta-1116c.firebasestorage.app",
+            messagingSenderId: "723252509632",
+            appId: "1:723252509632:web:b61c98fb1da547b201a625"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+    </script>
 
     <script src="script.js"></script>
 </body>
