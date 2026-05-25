@@ -1,3 +1,17 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyCOIaXVfnKNfezr6U6KN4E83nBld8pxg9U",
+  authDomain: "warriorcatsbeta-1116c.firebaseapp.com",
+  databaseURL: "https://warriorcatsbeta-1116c-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "warriorcatsbeta-1116c",
+  storageBucket: "warriorcatsbeta-1116c.firebasestorage.app",
+  messagingSenderId: "723252509632",
+  appId: "1:723252509632:web:b61c98fb1da547b201a625",
+  measurementId: "G-GXRZNQJBTR"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
 function createCharacter() {
 
     document.getElementById("start-screen").style.display = "none";
@@ -109,55 +123,29 @@ function rest() {
 
 // Загрузка чата
 function loadChat() {
+    const chat = document.getElementById("chat-messages");
 
-    const messages =
-        JSON.parse(localStorage.getItem("chat")) || "[]"
-        ;
-
-    const chat =
-        document.getElementById("chat-messages");
-
-    if(chat) {
-
+    db.ref("chat").on("value", (snapshot) => {
         chat.innerHTML = "";
 
-        messages.forEach(msg => {
-
-            chat.innerHTML += `<p>${msg}</p>`;
-
+        snapshot.forEach(msg => {
+            chat.innerHTML += `<p>${msg.val().text}</p>`;
         });
-
-    }
+    });
 }
 
 // Отправка сообщения
 function sendChatMessage() {
-
-    const input =
-        document.getElementById("chat-input");
-
-    if(!input) return;
-
+    const input = document.getElementById("chat-input");
     const text = input.value;
 
-    if(text.trim() === "") return;
+    if (!text.trim()) return;
 
-    const messages =
-        JSON.parse(localStorage.getItem("chat"))
-        || [];
-
-    messages.push(
-        `${player.name}: ${text}`
-    );
-
-    localStorage.setItem(
-        "chat",
-        JSON.stringify(messages)
-    );
+    db.ref("chat").push({
+        text: `${player.name}: ${text}`
+    });
 
     input.value = "";
-
-    loadChat();
 }
 function updateCatName() {
 
@@ -170,28 +158,28 @@ function updateCatName() {
             player.name;
     }
 }
+
 function updateCatAppearance() {
     const catImg = document.getElementById("cat");
 
-    if(catImg && player.color) {
-        catImg.src = getCatImage(player.color);
+    if(!catImg || !player.color) return;
+
+    if(player.color === "рыжий") {
+        catImg.src = "images/cat-red.png";
     }
-}
-function getCatImage(color) {
-    switch(color) {
-        case "рыжий":
-            return "images/cat-red.png";
-        case "серый":
-            return "images/cat-gray.png";
-        case "чёрный":
-            return "images/cat-black.png";
-        case "белый":
-            return "images/cat-white.png";
-        case "черепаховый":
-            return "images/cat-tortoiseshell.png";
-        case "полосатый":
-            return "images/cat-tabby.png";
-        default:
-            return "images/cat-gray.png";
+    else if(player.color === "серый") {
+        catImg.src = "images/cat-gray.png";
+    }
+    else if(player.color === "чёрный") {
+        catImg.src = "images/cat-black.png";
+    }
+    else if(player.color === "белый") {
+        catImg.src = "images/cat-white.png";
+    }
+    else if(player.color === "черепаховый") {
+        catImg.src = "images/cat-tortoiseshell.png";
+    }
+    else if(player.color === "полосатый") {
+        catImg.src = "images/cat-tabby.png";
     }
 }
