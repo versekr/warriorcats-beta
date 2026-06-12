@@ -183,3 +183,10 @@ function updateCatAppearance() {
         catImg.src = "images/cat-tabby.png";
     }
 }
+window.onload = function () {
+    loadPlayerData();
+    updatePlayerDisplay();
+    updateCatName();
+    updateCatAppearance();
+    loadChat();
+};
