@@ -1,23 +1,58 @@
-body {
-    margin: 0;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    color: white;
-    text-shadow: 2px 2px 4px black;
-    
-    background-image: url("images/forest.jpg");
-    background-repeat: repeat;
-    background-size: 300px;
-    min-height: 100vh;
+:root{
+    --bg:#222231;
+    --gold:#c8c9c4;
+    --white:#fff;
 }
 
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:var(--bg);
+    color:var(--white);
+    font-family:Arial,sans-serif;
+    text-align:center;
+    padding:30px;
+}
+
+h1{
+    color:var(--gold);
+    margin-bottom:10px;
+}
+
+button{
+    background:var(--gold);
+    padding:12px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+input,
+select{
+    width:250px;
+    padding:10px;
+    border-radius:6px;
+    border:none;
+    margin:10px 0;
+}
+body{
+    font-family:'PT Sans',sans-serif;
+}
+
+h1,h2,#cat-name{
+    font-family:'PT Sans Caption',sans-serif;
+}
 /* Фоны других локаций */
 .camp { background-image: url("images/camp.jpg"); }
 .river { background-image: url("images/river.jpg"); }
 
 /* Информация о коте — сверху слева */
 .player-info {
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(29, 29, 29, 0.75);
     padding: 12px 20px;
     border-radius: 10px;
     margin-bottom: 15px;
@@ -77,10 +112,9 @@ h1 {
 }
 /* Основной контейнер слева */
 .left-panel {
-    position: absolute;
+    position: fixed;
     top: 20px;
     left: 20px;
-    max-width: 420px;
 }
 
 /* Название локации */
@@ -103,13 +137,9 @@ h1 {
     text-shadow: 2px 2px 4px black;
 }
 #cat-container {
-
-    position: absolute;
-
+    position: fixed;
     bottom: 40px;
     left: 100px;
-
-    text-align: center;
 }
 
 #cat {
@@ -123,7 +153,36 @@ h1 {
 
     font-size: 22px;
 
-    text-shadow: 2px 2px 4px black;
+    text-shadow: 2px 2px 4px rgb(100, 95, 95);
 
     margin-top: -10px;
+}
+.chat-container {
+    background: rgba(0,0,0,0.8);
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 15px;
+}
+
+.chat-messages {
+    height: 200px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+.chat-input {
+    display: flex;
+    gap: 5px;
+}
+
+.chat-input input {
+    flex: 1;
+}
+.forest{
+    background-image: url("images/forest.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 300px;
+    
 }
