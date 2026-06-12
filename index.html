@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=PT+Sans+Caption:wght@400;700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <title>Коты Воители</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <h1>🐾 Коты Воители</h1>
+    <h1> Коты Воители</h1>
     <h2>Бета версия</h2>
 
     <div id="start-screen">
@@ -40,25 +44,9 @@
         <button onclick="saveCharacter()">Создать кота и начать игру!</button>
     </div>
 
-    <!-- 🔥 Firebase подключение -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
-    <!-- ⚙️ Firebase ИНИЦИАЛИЗАЦИЯ -->
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCOIaXVfnKNfezr6U6KN4E83nBld8pxg9U",
-            authDomain: "warriorcatsbeta-1116c.firebaseapp.com",
-            databaseURL: "https://warriorcatsbeta-1116c-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "warriorcatsbeta-1116c",
-            storageBucket: "warriorcatsbeta-1116c.firebasestorage.app",
-            messagingSenderId: "723252509632",
-            appId: "1:723252509632:web:b61c98fb1da547b201a625"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-    </script>
+   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
     <script src="script.js"></script>
 </body>
