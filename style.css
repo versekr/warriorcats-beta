@@ -1,188 +1,336 @@
 :root{
-    --bg:#222231;
-    --gold:#c8c9c4;
-    --white:#fff;
+--bg:#1a1a2e;
+--gold:#c8a84e;
+--brown:#8b7355;
+--dark-brown:#5c4a32;
+--light-gold:#e0c878;
+--white:#f0f0f0;
+--shadow:0 4px 15px rgba(0,0,0,0.3);
 }
-
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
-
 body{
-    background:var(--bg);
-    color:var(--white);
-    font-family:Arial,sans-serif;
-    text-align:center;
-    padding:30px;
+background:var(--bg);
+color:var(--white);
+font-family:'PT Sans', Arial, sans-serif;
+text-align:center;
+padding:30px;
+min-height:100vh;
 }
-
-h1{
-    color:var(--gold);
-    margin-bottom:10px;
-}
-
 button{
-    background:var(--gold);
-    padding:12px 20px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
+background:linear-gradient(135deg, var(--gold), var(--brown));
+padding:12px 20px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+color:white;
+font-weight:bold;
+transition:all 0.3s ease;
+box-shadow:var(--shadow);
 }
-
+button:hover{
+transform:translateY(-2px);
+box-shadow:0 6px 20px rgba(0,0,0,0.4);
+background:linear-gradient(135deg, var(--light-gold), var(--gold));
+}
 input,
 select{
-    width:250px;
-    padding:10px;
-    border-radius:6px;
-    border:none;
-    margin:10px 0;
+width:250px;
+padding:10px;
+border-radius:6px;
+border:2px solid var(--gold);
+margin:10px 0;
+background:rgba(255,255,255,0.9);
 }
-body{
-    font-family:'PT Sans',sans-serif;
-}
-
 h1,h2,#cat-name{
-    font-family:'PT Sans Caption',sans-serif;
+font-family:'PT Sans Caption', sans-serif;
+color:var(--gold);
+text-shadow:2px 2px 4px rgba(0,0,0,0.5);
 }
-/* Фоны других локаций */
-.camp { background-image: url("images/camp.jpg"); }
-.river { background-image: url("images/river.jpg"); }
-
-/* Информация о коте — сверху слева */
+.camp { 
+background-image: url("images/camp.jpg");
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+}
+.river { 
+background-image: url("images/river.jpg");
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+}
+.forest{
+background-image: url("images/forest.jpg");
+background-position: center;
+background-repeat: repeat;
+background-attachment: fixed;
+background-size: 300px;
+}
+body::before{
+content:'';
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.3);
+pointer-events:none;
+z-index:-1;
+}
 .player-info {
-    background: rgba(29, 29, 29, 0.75);
-    padding: 12px 20px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-    display: inline-block;
-    font-size: 18px;
+background:rgba(139,115,85,0.9);
+padding:15px 25px;
+border-radius:15px;
+margin-bottom:20px;
+display:inline-block;
+font-size:18px;
+box-shadow:var(--shadow);
+backdrop-filter:blur(5px);
+border:2px solid var(--gold);
 }
-
-/* Блок действий + лог — правый верхний угол */
-.sidebar {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 320px;
-    z-index: 100;
+.stats{
+margin-top:10px;
+font-size:14px;
+line-height:1.6;
 }
-
-/* Кнопки действий */
-.actions {
-    background: rgba(0, 0, 0, 0.8);
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 15px;
+.stats span{
+color:var(--light-gold);
+font-weight:bold;
 }
-
-.actions button {
-    display: block;
-    width: 100%;
-    padding: 14px;
-    margin: 8px 0;
-    font-size: 18px;
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.actions button:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-/* Лог */
-.log {
-    background: rgba(0, 0, 0, 0.8);
-    padding: 15px;
-    border-radius: 12px;
-    max-height: 420px;
-    overflow-y: auto;
-    text-align: left;
-    font-size: 16px;
-}
-
-h1 {
-    text-align: center;
-    font-size: 48px;
-    margin: 20px 0;
-}
-/* Основной контейнер слева */
 .left-panel {
-    position: fixed;
-    top: 20px;
-    left: 20px;
+position:fixed;
+top:20px;
+left:20px;
+z-index:100;
 }
-
-/* Название локации */
-h1 {
-    text-align: left;
-    font-size: 42px;
-    margin: 10px 0 20px 0;
-    text-shadow: 3px 3px 6px black;
-}
-
-/* Карточка локации */
 .location-info {
-    background: rgba(0, 0, 0, 0.75);
-    padding: 12px 20px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-    display: inline-block;
-    font-size: 32px;           /* чуть меньше чем было */
-    font-weight: bold;
-    text-shadow: 2px 2px 4px black;
+background:rgba(139,115,85,0.9);
+padding:15px 25px;
+border-radius:15px;
+margin-bottom:20px;
+display:inline-block;
+font-size:28px;
+font-weight:bold;
+text-shadow:2px 2px 4px rgba(0,0,0,0.3);
+box-shadow:var(--shadow);
+border:2px solid var(--gold);
+color:white;
 }
 #cat-container {
-    position: fixed;
-    bottom: 40px;
-    left: 100px;
+position:fixed;
+bottom:40px;
+left:100px;
+z-index:50;
 }
-
 #cat {
-
-    width: 300px;
+width:300px;
+filter:drop-shadow(5px 5px 10px rgba(0,0,0,0.5));
+animation:catFloat 3s ease-in-out infinite;
 }
 
 #cat-name {
-
-    color: white;
-
-    font-size: 22px;
-
-    text-shadow: 2px 2px 4px rgb(100, 95, 95);
-
-    margin-top: -10px;
+color:white;
+font-size:24px;
+text-shadow:2px 2px 4px rgba(0,0,0,0.7);
+margin-top:-10px;
+}
+.panel-container{
+position:fixed;
+top:20px;
+right:20px;
+width:340px;
+z-index:100;
+}
+.online-players-container{
+background:rgba(139,115,85,0.9);
+padding:15px;
+border-radius:15px;
+margin-bottom:15px;
+box-shadow:var(--shadow);
+border:2px solid var(--gold);
+backdrop-filter:blur(5px);
+}
+.online-header{
+color:white;
+font-size:18px;
+font-weight:bold;
+margin-bottom:10px;
+text-shadow:1px 1px 2px rgba(0,0,0,0.5);
+}
+#online-count{
+color:var(--light-gold);
+font-size:14px;
+margin-bottom:10px;
+}
+.online-player{
+display:flex;
+align-items:center;
+padding:8px;
+margin:5px 0;
+background:rgba(255,255,255,0.1);
+border-radius:8px;
+transition:all 0.3s ease;
+}
+.online-player:hover{
+background:rgba(255,255,255,0.2);
+transform:translateX(5px);
+}
+.online-icon{
+font-size:20px;
+margin-right:10px;
+}
+.online-name{
+flex:1;
+text-align:left;
+font-weight:bold;
+color:white;
+}
+.online-location{
+font-size:12px;
+color:var(--light-gold);
+}
+.online-status{
+width:10px;
+height:10px;
+border-radius:50%;
+background:#4CAF50;
+margin-left:10px;
+animation:pulse 2s infinite;
+}
+.online-status.me{
+background:#FF9800;
+}
+@keyframes pulse{
+0%,100%{opacity:1;}
+50%{opacity:0.5;}
+}
+.online-empty{
+color:rgba(255,255,255,0.6);
+font-style:italic;
+padding:10px;
 }
 .chat-container {
-    background: rgba(0,0,0,0.8);
-    padding: 15px;
-    border-radius: 12px;
-    margin-top: 15px;
+background:rgba(139,115,85,0.9);
+padding:15px;
+border-radius:15px;
+box-shadow:var(--shadow);
+border:2px solid var(--gold);
+backdrop-filter:blur(5px);
 }
-
 .chat-messages {
-    height: 200px;
-    overflow-y: auto;
-    margin-bottom: 10px;
+height:250px;
+overflow-y:auto;
+margin-bottom:15px;
+text-align:left;
+background:rgba(0,0,0,0.2);
+padding:10px;
+border-radius:8px;
 }
-
+.chat-messages p{
+margin:5px 0;
+padding:5px;
+background:rgba(255,255,255,0.1);
+border-radius:5px;
+}
+.chat-sender{
+font-weight:bold;
+color:var(--light-gold);
+}
+.chat-text{
+color:white;
+}
 .chat-input {
-    display: flex;
-    gap: 5px;
+display:flex;
+gap:10px;
 }
-
 .chat-input input {
-    flex: 1;
+flex:1;
+background:rgba(255,255,255,0.9);
 }
-.forest{
-    background-image: url("images/forest.jpg");
-    background-position: center;
-    background-repeat: repeat;
-    background-attachment: fixed;
-    background-size: 300px;
-    
+.chat-input button {
+background:linear-gradient(135deg, var(--gold), var(--brown));
+}
+.log {
+background:rgba(139,115,85,0.9);
+padding:15px;
+border-radius:15px;
+max-height:300px;
+overflow-y:auto;
+text-align:left;
+font-size:14px;
+box-shadow:var(--shadow);
+border:2px solid var(--gold);
+margin-top:15px;
+backdrop-filter:blur(5px);
+}
+.log p{
+margin:5px 0;
+color:white;
+}
+.actions {
+background:rgba(139,115,85,0.9);
+padding:15px;
+border-radius:15px;
+margin-bottom:15px;
+box-shadow:var(--shadow);
+border:2px solid var(--gold);
+backdrop-filter:blur(5px);
+}
+.actions button {
+display:block;
+width:100%;
+padding:14px;
+margin:8px 0;
+font-size:16px;
+}
+select[name="going1"],
+select[name="going2"]{
+width:100%;
+padding:12px;
+background:rgba(255,255,255,0.9);
+border:2px solid var(--gold);
+border-radius:8px;
+margin-bottom:10px;
+font-size:16px;
+}
+input.okk{
+width:100%;
+padding:12px;
+background:linear-gradient(135deg, var(--gold), var(--brown));
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+transition:all 0.3s ease;
+}
+input.okk:hover{
+background:linear-gradient(135deg, var(--light-gold), var(--gold));
+transform:translateY(-2px);
+}
+@media (max-width: 768px) {
+.left-panel{
+position:relative;
+top:auto;
+left:auto;
+margin-bottom:20px;
+}
+.panel-container{
+position:relative;
+top:auto;
+right:auto;
+width:100%;
+}
+#cat-container{
+position:relative;
+bottom:auto;
+left:auto;
+margin:20px 0;
+}
+#cat{
+width:200px;
+}
 }

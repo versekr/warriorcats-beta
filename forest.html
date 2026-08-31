@@ -1,132 +1,63 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-    <meta charset="UTF-8"> 
-    <title>Лес warriorbeta </title>
-
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Лес warriorbeta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=PT+Sans+Caption:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body class="forest">
-
-    <!-- Левая панель -->
-    <div class="left-panel">
-
-        <!-- Информация о коте -->
-        <div class="player-info">
-
-            <span id="cat-display"></span>
-
-            <div class="stats">
-
-                Здоровье:
-                <span id="health">100</span> |
-
-                Голод:
-  <span id="hunger">50</span> |
-
-                Энергия:
-                <span id="energy">80</span> |
-
-                Уровень:
-                <span id="level">1</span>
-
-                <br>
-
-                Сила:
-                <span id="strength">10</span> |
-
-                Ловкость:
-                <span id="agility">12</span>
-
-            </div>
-
-        </div>
-
-        <!-- Название локации -->
-        <div class="location-info">
-            Лес-01
-        </div>
-
-    </div>
-
-    <!-- Кот -->
-    <div id="cat-container">
-
-        <img id="cat"
-         src="images/cat-tabby.png">
-
-        <div id="cat-name"></div>
-
-    </div>
-
-    <!-- Правая панель -->
-    <div class="sidebar">
-
-        <!-- Кнопки -->
-        <div class="actions">
-
-            <button onclick="hunt()">
-                Охотиться
-            </button>
-
-            <button onclick="explore()">
-                Осмотреться
-            </button>
-
-            <button onclick="rest()">
-                Отдохнуть
-            </button>
-
-            <button onclick="goTo('camp.html')">
-                В лагерь
-            </button>
-
-            <button onclick="goTo('river.html')">
-                К реке
-            </button>
-
-        </div>
-
-        <!-- Лог -->
-        <div id="log" class="log"></div>
-
-        <!-- Чат -->
-        <div class="chat-container">
-
-            <div id="chat-messages"
-                 class="chat-messages">
-            </div>
-
-            <div class="chat-input">
-
-                <input type="text"
-                       id="chat-input"
-                       placeholder="Написать в чат..."
-                       maxlength="150">
-
-                <button onclick="sendChatMessage()">
-                    Отправить
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
+<!-- Левая панель -->
+<div class="left-panel">
+<div class="player-info">
+<span id="cat-display"></span>
+<div class="stats">
+Здоровье: <span id="health"></span> |
+Голод: <span id="hunger"></span> |
+Энергия: <span id="energy"></span> |
+Уровень: <span id="level"></span>
+<br>
+Сила: <span id="strength"></span> |
+Ловкость: <span id="agility"></span>
+</div>
+<div class="location-info">
+Лес-01
+</div>
+</div>
+<!-- Кот -->
+<div id="cat-container">
+<img id="cat" src="images/cat-tabby.png">
+<div id="cat-name"></div>
+</div>
+<!-- Правая панель -->
+<div class="panel-container">
+<!-- Онлайн игроки -->
+<div class="online-players-container">
+<div class="online-header"> Онлайн игроки</div>
+<div id="online-count"></div>
+<div id="online-players"></div>
+</div>
+<!-- Перемещение -->
+<select name="going2" size="1">
+<option value="6020">Река</option>
+<option value="6014">Лагерь</option>
+</select>
+<input class="okk" type="submit" value="Перейти" onclick="moving(parseInt(document.querySelector('select[name=going2]').value, 10), 'move'); return false;">
+<!-- Лог -->
+<div id="log" class="log"></div>
+<!-- Чат -->
+<div class="chat-container">
+<div id="chat-messages" class="chat-messages"></div>
+<div class="chat-input">
+<input type="text" id="chat-input" placeholder="Написать в чат..." maxlength="150">
+<button onclick="sendChatMessage()">Отправить</button>
+</div>
+</div>
+</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-
 <script src="script.js"></script>
-
-<script>
-    loadPlayerData();
-    updatePlayerDisplay();
-    updateCatName();
-    loadChat();
-    updateCatAppearance();
-</script>
-
 </body>
 </html>
