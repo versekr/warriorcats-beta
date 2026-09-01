@@ -139,7 +139,7 @@ playerDiv.className = 'online-player';
 let catIcon = '🐱';
 if (data.color === 'рыжий') catIcon = '🐱';
 else if (data.color === 'серый') catIcon = '🐈';
-else if (data.color === 'чёрный') catIcon = '🐈‍';
+else if (data.color === 'чёрный') catIcon = '🐱';
 else if (data.color === 'белый') catIcon = '🐱';
 else if (data.color === 'черепаховый') catIcon = '🐈';
 else if (data.color === 'полосатый') catIcon = '🐱';
