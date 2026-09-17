@@ -189,20 +189,18 @@ otherPlayers.push({id, data});
 }
 });
 console.log('Другие игроки в локации:', otherPlayers);
-const catsPerRow = 4;
-const catWidth = 320;
-const catHeight = 350;
+const isMobile = window.innerWidth <= 768;
+const catsPerRow = isMobile ? 2 : 4;
+const catWidth = isMobile ? 150 : 320;
+const catHeight = isMobile ? 200 : 350;
 otherPlayers.forEach((player, index) => {
 const row = Math.floor(index / catsPerRow);
 const col = index % catsPerRow;
 const playerDiv = document.createElement('div');
 playerDiv.className = 'other-player';
-playerDiv.style.position = 'absolute';
-playerDiv.style.bottom = (40 + row * catHeight) + 'px';
-playerDiv.style.left = (420 + col * catWidth) + 'px';
 playerDiv.innerHTML = `
-<img src="${getCatImage(player.data.color)}" style="width:300px;">
-<div style="color:white;font-size:22px;text-shadow:2px 2px 4px rgb(100,95,95);margin-top:-10px;">${escapeHtml(player.data.name)}</div>
+<img src="${getCatImage(player.data.color)}">
+<div>${escapeHtml(player.data.name)}</div>
 `;
 container.appendChild(playerDiv);
 });
