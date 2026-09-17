@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Река warriorbeta</title>
+<title>протяжная река warriorbeta</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=PT+Sans+Caption:wght@400;700&display=swap" rel="stylesheet">
@@ -22,12 +22,15 @@
 Сила: <span id="strength"></span> |
 Ловкость: <span id="agility"></span>
 </div>
-<button class="menu-btn" onclick="goTo('index.html')">Меню</button>
+<button class="menu-btn" onclick="goTo('menu.html')">Меню</button>
+<button class="menu-btn" onclick="openInventory()">Инвентарь</button>
 </div>
 <div class="location-info">
 Река-02
 </div>
 </div>
+<div id="items-on-ground"></div>
+<div id="other-players"></div>
 <!-- Кот -->
 <div id="cat-container">
 <img id="cat" src="images/cat-tabby.png">
@@ -41,9 +44,16 @@
 <div id="online-count"></div>
 <div id="online-players"></div>
 </div>
+<div id="inventory-modal" class="inventory-modal">
+<div class="inventory-box">
+<h2>Инвентарь</h2>
+<div id="inventory-items" class="inventory-items"></div>
+<button onclick="closeInventory()">Закрыть</button>
+</div>
+</div>
 <!-- Перемещение -->
 <select name="going1" size="1">
-<option value="1001">Лес</option>
+<option value="1001">теплая лужайка</option>
 <option value="6014">Лагерь</option>
 </select>
 <input class="okk" type="submit" value="Перейти" onclick="moving(parseInt(document.querySelector('select[name=going1]').value, 10), 'move'); return false;">
