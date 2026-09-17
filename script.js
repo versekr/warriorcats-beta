@@ -104,6 +104,14 @@ if (!player.name) return;
 }
 const playerId = getPlayerId();
 const location = getCurrentLocation();
+// Удаляем все предыдущие сессии этого игрока
+onlineRef.orderByChild('name').equalTo(player.name).once('value', (snapshot) => {
+snapshot.forEach((child) => {
+if (child.key !== playerId) {
+onlineRef.child(child.key).remove();
+}
+});
+});
 myOnlineRef = onlineRef.child(playerId);
 myOnlineRef.set({
 name: player.name,
@@ -131,7 +139,7 @@ playerDiv.className = 'online-player';
 let catIcon = '🐱';
 if (data.color === 'рыжий') catIcon = '🐱';
 else if (data.color === 'серый') catIcon = '🐈';
-else if (data.color === 'чёрный') catIcon = '🐈‍⬛';
+else if (data.color === 'чёрный') catIcon = '🐈‍';
 else if (data.color === 'белый') catIcon = '🐱';
 else if (data.color === 'черепаховый') catIcon = '🐈';
 else if (data.color === 'полосатый') catIcon = '🐱';
@@ -144,6 +152,60 @@ const counter = document.getElementById('online-count');
 if (counter) {
 counter.textContent = `Игроков онлайн: ${playerEntries.length}`;
 }
+});
+}
+// Получение картинки кота по цвету
+function getCatImage(color) {
+const images = {
+'рыжий': 'images/cat-red.png',
+'серый': 'images/cat-gray.png',
+'чёрный': 'images/cat-black.png',
+'белый': 'images/cat-white.png',
+'черепаховый': 'images/cat-tortoiseshell.png',
+'полосатый': 'images/cat-tabby.png'
+};
+return images[color] || 'images/cat-tabby.png';
+}
+
+// Отображение других игроков в локации
+function displayPlayersInLocation() {
+const container = document.getElementById('other-players');
+if (!container) {
+console.log('Нет контейнера other-players');
+return;
+}
+const currentLocation = getCurrentLocation();
+const myId = getPlayerId();
+console.log('Текущая локация:', currentLocation, 'Мой ID:', myId);
+onlineRef.on('value', (snapshot) => {
+const players = snapshot.val();
+console.log('Игроки из Firebase:', players);
+if (!players) return;
+container.innerHTML = '';
+let otherPlayers = [];
+Object.entries(players).forEach(([id, data]) => {
+if (id !== myId && data.location === currentLocation) {
+otherPlayers.push({id, data});
+}
+});
+console.log('Другие игроки в локации:', otherPlayers);
+const catsPerRow = 4;
+const catWidth = 320;
+const catHeight = 350;
+otherPlayers.forEach((player, index) => {
+const row = Math.floor(index / catsPerRow);
+const col = index % catsPerRow;
+const playerDiv = document.createElement('div');
+playerDiv.className = 'other-player';
+playerDiv.style.position = 'absolute';
+playerDiv.style.top = (40 + row * catHeight) + 'px';
+playerDiv.style.left = (100 + col * catWidth) + 'px';
+playerDiv.innerHTML = `
+<img src="${getCatImage(player.data.color)}" style="width:300px;">
+<div style="color:white;font-size:22px;text-shadow:2px 2px 4px rgb(100,95,95);margin-top:-10px;">${escapeHtml(player.data.name)}</div>
+`;
+container.appendChild(playerDiv);
+});
 });
 }
 // ===== ЧАТ =====
@@ -261,8 +323,11 @@ updateStatsDisplay();
 updateCatName();
 updateCatAppearance();
 loadChat();
-connectToOnline();
 displayOnlinePlayers();
+connectToOnline();
+setTimeout(() => {
+displayPlayersInLocation();
+}, 1000);
 };
 // Для страницы создания персонажа
 function createCharacter() {
@@ -295,3 +360,15 @@ window.location.href = "forest.html";
 alert("Сохранение не найдено!");
 }
 }
+function sleep() {
+if (player && player.energy !== undefined) {
+player.energy = 100;
+localStorage.setItem("catData", JSON.stringify(player));
+const energyDisplay = document.getElementById("energy");
+if (energyDisplay) {
+energyDisplay.textContent = player.energy;
+}
+}
+addLog("Ты поспал. Энергия полностью восстановлена!");
+}
+document.querySelector('script[src="script.js"]')
