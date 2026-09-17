@@ -11,6 +11,7 @@ measurementId: "G-GXRZNQJBTR"
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+const itemsRef = db.ref('items');
 const onlineRef = db.ref('online');
 const chatRef = db.ref('chat');
 // Данные игрока 
@@ -287,7 +288,7 @@ catImg.src = "images/cat-tabby.png";
 }
 }
 // Навигация
-const LOCATION_BY_CODE = {
+var LOCATION_BY_CODE = {
 6020: "river.html",
 6014: "camp.html",
 1001: "forest.html"
@@ -323,6 +324,7 @@ updateCatAppearance();
 loadChat();
 displayOnlinePlayers();
 connectToOnline();
+displayItemsInLocation();
 setTimeout(() => {
 displayPlayersInLocation();
 }, 1000);
@@ -345,7 +347,8 @@ hunger: 50,
 energy: 80,
 level: 1,
 strength: 10,
-agility: 12
+agility: 12,
+inventory: []
 };
 localStorage.setItem("catData", JSON.stringify(catData));
 window.location.href = "forest.html";
@@ -370,3 +373,118 @@ energyDisplay.textContent = player.energy;
 addLog("Ты поспал. Энергия полностью восстановлена!");
 }
 document.querySelector('script[src="script.js"]')
+function openInventory() {
+const modal = document.getElementById('inventory-modal');
+if (!modal) return;
+modal.style.display = 'flex';
+loadInventory();
+}
+function closeInventory() {
+const modal = document.getElementById('inventory-modal');
+if (modal) modal.style.display = 'none';
+}
+function loadInventory() {
+const container = document.getElementById('inventory-items');
+if (!container) return;
+const inventory = player.inventory || [];
+if (inventory.length === 0) {
+container.innerHTML = '<p class="inventory-empty">Инвентарь пуст</p>';
+return;
+}
+container.innerHTML = '';
+inventory.forEach((item, index) => {
+const itemDiv = document.createElement('div');
+itemDiv.className = 'inventory-item';
+let iconHtml = '';
+if (item.icon && item.icon.startsWith('images/')) {
+iconHtml = `<img src="${item.icon}" class="item-img">`;
+} else {
+iconHtml = `<span class="item-icon">${item.icon || '📦'}</span>`;
+}
+itemDiv.innerHTML = `
+${iconHtml}
+<span class="item-name">${escapeHtml(item.name)}</span>
+<span class="item-count">x${item.count || 1}</span>
+`;
+const useBtn = document.createElement('button');
+useBtn.textContent = 'Использовать';
+useBtn.style.marginLeft = '10px';
+useBtn.style.padding = '6px 12px';
+useBtn.style.fontSize = '12px';
+useBtn.onclick = () => useItem(index);
+const dropBtn = document.createElement('button');
+dropBtn.textContent = 'Выложить';
+dropBtn.style.marginLeft = '5px';
+dropBtn.style.padding = '6px 12px';
+dropBtn.style.fontSize = '12px';
+dropBtn.onclick = () => dropItem(index);
+itemDiv.appendChild(useBtn);
+itemDiv.appendChild(dropBtn);
+container.appendChild(itemDiv);
+});
+}
+//ОТОБРОЖЕНИЕ ПРЕДМЕТА НА ЛОКАЦИИ
+function displayItemsInLocation() {
+const container = document.getElementById('items-on-ground');
+if (!container) return;
+const currentLocation = getCurrentLocation();
+let locationKey = 'camp';
+if (currentLocation.includes('Лес')) locationKey = 'forest';
+if (currentLocation.includes('Река')) locationKey = 'river';
+if (currentLocation.includes('Лагерь')) locationKey = 'camp';
+itemsRef.child(locationKey).on('value', (snapshot) => {
+const items = snapshot.val();
+container.innerHTML = '';
+if (!items) return;
+Object.entries(items).forEach(([id, item]) => {
+const itemDiv = document.createElement('div');
+itemDiv.className = 'ground-item';
+itemDiv.style.position = 'absolute';
+itemDiv.style.left = (item.x || 500) + 'px';
+itemDiv.style.top = (item.y || 400) + 'px';
+itemDiv.style.zIndex = '45';
+itemDiv.style.cursor = 'pointer';
+itemDiv.innerHTML = `<img src="${item.icon || 'images/mouse.jpg'}" style="width:150px;height:150px;">`;
+itemDiv.onclick = () => pickUpItem(locationKey, id, item);
+container.appendChild(itemDiv);
+});
+});
+}
+//ВЗЯТЬ ПРЕДМЕТ
+function pickUpItem(locationKey, itemId, item) {
+if (!player.inventory) player.inventory = [];
+const existing = player.inventory.find(i => i.name === item.name);
+if (existing) {
+existing.count = (existing.count || 1) + 1;
+} else {
+player.inventory.push({ name: item.name || 'Предмет', icon: item.icon || '📦', count: 1 });
+}
+localStorage.setItem("catData", JSON.stringify(player));
+itemsRef.child(locationKey).child(itemId).remove();
+addLog(`Ты подобрал: ${item.name}`);
+}
+//ФУНКЦИЯ ВЫБРОСИТЬ ПРЕДМЕТ
+function dropItem(index) {
+if (!player.inventory || !player.inventory[index]) return;
+const item = player.inventory[index];
+const currentLocation = getCurrentLocation();
+let locationKey = 'camp';
+if (currentLocation.includes('Лес')) locationKey = 'forest';
+if (currentLocation.includes('Река')) locationKey = 'river';
+if (currentLocation.includes('Лагерь')) locationKey = 'camp';
+const x = 500 + Math.random() * 400;
+const y = 400 + Math.random() * 200;
+itemsRef.child(locationKey).push({
+name: item.name || 'Предмет',
+icon: item.icon || '📦',
+x: Math.round(x),
+y: Math.round(y)
+});
+item.count = (item.count || 1) - 1;
+if (item.count <= 0) {
+player.inventory.splice(index, 1);
+}
+localStorage.setItem("catData", JSON.stringify(player));
+addLog(`Ты выложил: ${item.name}`);
+closeInventory();
+}
