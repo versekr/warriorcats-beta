@@ -23,11 +23,13 @@
 Ловкость: <span id="agility"></span>
 </div>
 <button class="menu-btn" onclick="goTo('index.html')">Меню</button>
+<button class="menu-btn" onclick="openInventory()">Инвентарь</button>
 </div>
 <div class="location-info">
-лужайка-01
+теплая лужайка-01
 </div>
 </div>
+<div id="items-on-ground"></div>
 <div id="other-players"></div>
 <!-- Кот -->
 <div id="cat-container">
@@ -42,9 +44,16 @@
 <div id="online-count"></div>
 <div id="online-players"></div>
 </div>
+<div id="inventory-modal" class="inventory-modal">
+<div class="inventory-box">
+<h2>Инвентарь</h2>
+<div id="inventory-items" class="inventory-items"></div>
+<button onclick="closeInventory()">Закрыть</button>
+</div>
+</div>
 <!-- Перемещение -->
 <select name="going2" size="1">
-<option value="6020">Река</option>
+<option value="6020">протяжная река</option>
 <option value="6014">Лагерь</option>
 </select>
 <input class="okk" type="submit" value="Перейти" onclick="moving(parseInt(document.querySelector('select[name=going2]').value, 10), 'move'); return false;">
