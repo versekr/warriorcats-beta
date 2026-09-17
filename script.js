@@ -13,7 +13,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const onlineRef = db.ref('online');
 const chatRef = db.ref('chat');
-// Данные игрока
+// Данные игрока 
 let player = {};
 let myOnlineRef = null;
 // Загрузка данных игрока
