@@ -198,7 +198,7 @@ const col = index % catsPerRow;
 const playerDiv = document.createElement('div');
 playerDiv.className = 'other-player';
 playerDiv.style.position = 'absolute';
-playerDiv.style.top = (40 + row * catHeight) + 'px';
+playerDiv.style.top = (400 + row * catHeight) + 'px';
 playerDiv.style.left = (100 + col * catWidth) + 'px';
 playerDiv.innerHTML = `
 <img src="${getCatImage(player.data.color)}" style="width:300px;">
