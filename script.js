@@ -52,10 +52,14 @@ window.location.href = location;
 // Лог сообщений
 function addLog(text) {
 const log = document.getElementById("log");
-if(log) {
-log.innerHTML += `<p>${text}</p>`;
+if(!log) return;
+const p = document.createElement("p");
+p.textContent = text;
+log.appendChild(p);
 log.scrollTop = log.scrollHeight;
-}
+setTimeout(() => {
+if (p.parentNode) p.parentNode.removeChild(p);
+}, 5000);
 }
 // Охота
 function hunt() {
@@ -120,7 +124,9 @@ color: player.color || 'полосатый',
 location: location,
 lastSeen: firebase.database.ServerValue.TIMESTAMP
 });
-myOnlineRef.onDisconnect().remove();
+myOnlineRef.onDisconnect().update({
+lastSeen: 0
+});
 }
 // Отображение списка онлайн игроков
 function displayOnlinePlayers() {
@@ -140,13 +146,15 @@ playerDiv.className = 'online-player';
 let catIcon = '🐱';
 if (data.color === 'рыжий') catIcon = '🐱';
 else if (data.color === 'серый') catIcon = '🐈';
-else if (data.color === 'чёрный') catIcon = '🐈‍';
+else if (data.color === 'чёрный') catIcon = '🐈‍⬛';
 else if (data.color === 'белый') catIcon = '🐱';
 else if (data.color === 'черепаховый') catIcon = '🐈';
 else if (data.color === 'полосатый') catIcon = '🐱';
 const isMe = id === getPlayerId();
 const nameDisplay = isMe ? `${data.name} (вы)` : data.name;
-playerDiv.innerHTML = `<span class="online-icon">${catIcon}</span><span class="online-name">${escapeHtml(nameDisplay)}</span><span class="online-location">${escapeHtml(data.location)}</span><span class="online-status ${isMe ? 'me' : ''}"></span>`;
+const isOnline = data.lastSeen && (Date.now() - data.lastSeen < 60000);
+const nameClass = isOnline ? 'online-name online-active' : 'online-name';
+playerDiv.innerHTML = `<span class="online-icon">${catIcon}</span><span class="${nameClass}">${escapeHtml(nameDisplay)}</span><span class="online-location">${escapeHtml(data.location)}</span><span class="online-status ${isMe ? 'me' : ''}"></span>`;
 onlineContainer.appendChild(playerDiv);
 });
 const counter = document.getElementById('online-count');
@@ -154,18 +162,6 @@ if (counter) {
 counter.textContent = `Игроков онлайн: ${playerEntries.length}`;
 }
 });
-}
-// Получение картинки кота по цвету
-function getCatImage(color) {
-const images = {
-'рыжий': 'images/cat-red.png',
-'серый': 'images/cat-gray.png',
-'чёрный': 'images/cat-black.png',
-'белый': 'images/cat-white.png',
-'черепаховый': 'images/cat-tortoiseshell.png',
-'полосатый': 'images/cat-tabby.png'
-};
-return images[color] || 'images/cat-tabby.png';
 }
 
 // Отображение других игроков в локации
@@ -199,9 +195,12 @@ const row = Math.floor(index / catsPerRow);
 const col = index % catsPerRow;
 const playerDiv = document.createElement('div');
 playerDiv.className = 'other-player';
+const isOnline = player.data.lastSeen && (Date.now() - player.data.lastSeen < 60000);
+const nameColor = isOnline ? '#4fc3f7' : 'white';
+const nameShadow = isOnline ? '0 0 8px rgba(79,195,247,0.8)' : '2px 2px 4px rgba(0,0,0,0.7)';
 playerDiv.innerHTML = `
 <img src="${getCatImage(player.data.color)}">
-<div>${escapeHtml(player.data.name)}</div>
+<div style="color:${nameColor};text-shadow:${nameShadow};">${escapeHtml(player.data.name)}</div>
 `;
 container.appendChild(playerDiv);
 });
@@ -322,12 +321,27 @@ updateStatsDisplay();
 updateCatName();
 updateCatAppearance();
 loadChat();
-displayOnlinePlayers();
 connectToOnline();
 displayItemsInLocation();
+const chatInput = document.getElementById('chat-input');
+if (chatInput) {
+chatInput.addEventListener('keydown', (e) => {
+if (e.key === 'Enter') {
+e.preventDefault();
+sendChatMessage();
+}
+});
+}
 setTimeout(() => {
 displayPlayersInLocation();
 }, 1000);
+setInterval(() => {
+if (myOnlineRef) {
+myOnlineRef.update({
+lastSeen: firebase.database.ServerValue.TIMESTAMP
+});
+}
+}, 30000);
 };
 // Для страницы создания персонажа
 function createCharacter() {
@@ -436,15 +450,20 @@ itemsRef.child(locationKey).on('value', (snapshot) => {
 const items = snapshot.val();
 container.innerHTML = '';
 if (!items) return;
-Object.entries(items).forEach(([id, item]) => {
+const isMobile = window.innerWidth <= 768;
+const itemSize = isMobile ? 200 : 200;
+const startX = 30;
+const startY = isMobile ? 500 : 480;
+const gap = 10;
+Object.entries(items).forEach(([id, item], index) => {
 const itemDiv = document.createElement('div');
 itemDiv.className = 'ground-item';
 itemDiv.style.position = 'absolute';
-itemDiv.style.left = (item.x || 500) + 'px';
-itemDiv.style.top = (item.y || 400) + 'px';
+itemDiv.style.left = (startX + index * (itemSize + gap)) + 'px';
+itemDiv.style.top = startY + 'px';
 itemDiv.style.zIndex = '45';
 itemDiv.style.cursor = 'pointer';
-itemDiv.innerHTML = `<img src="${item.icon || 'images/mouse.jpg'}" style="width:150px;height:150px;">`;
+itemDiv.innerHTML = `<img src="${item.icon || 'images/mouse.jpg'}" style="width:${itemSize}px;height:${itemSize}px;">`;
 itemDiv.onclick = () => pickUpItem(locationKey, id, item);
 container.appendChild(itemDiv);
 });
@@ -457,7 +476,14 @@ const existing = player.inventory.find(i => i.name === item.name);
 if (existing) {
 existing.count = (existing.count || 1) + 1;
 } else {
-player.inventory.push({ name: item.name || 'Предмет', icon: item.icon || '📦', count: 1 });
+const invItem = {
+name: item.name || 'Предмет',
+icon: item.icon || '📦',
+count: 1
+};
+if (item.food !== undefined) invItem.food = item.food;
+if (item.energy !== undefined) invItem.energy = item.energy;
+player.inventory.push(invItem);
 }
 localStorage.setItem("catData", JSON.stringify(player));
 itemsRef.child(locationKey).child(itemId).remove();
@@ -474,12 +500,14 @@ if (currentLocation.includes('Река')) locationKey = 'river';
 if (currentLocation.includes('Лагерь')) locationKey = 'camp';
 const x = 500 + Math.random() * 400;
 const y = 400 + Math.random() * 200;
-itemsRef.child(locationKey).push({
+const dropData = {
 name: item.name || 'Предмет',
 icon: item.icon || '📦',
 x: Math.round(x),
 y: Math.round(y)
-});
+};
+if (item.food) dropData.food = item.food;
+itemsRef.child(locationKey).push(dropData);
 item.count = (item.count || 1) - 1;
 if (item.count <= 0) {
 player.inventory.splice(index, 1);
@@ -487,4 +515,49 @@ player.inventory.splice(index, 1);
 localStorage.setItem("catData", JSON.stringify(player));
 addLog(`Ты выложил: ${item.name}`);
 closeInventory();
+}
+//ИСПОЛЬЗОВАТЬ ПРЕДМЕТ
+function useItem(index) {
+if (!player.inventory || !player.inventory[index]) return;
+const item = player.inventory[index];
+let used = false;
+if (item.energy) {
+player.energy = Math.min(100, (player.energy || 0) + item.energy);
+const energyDisplay = document.getElementById("energy");
+if (energyDisplay) energyDisplay.textContent = player.energy;
+addLog(`Ты использовал ${item.name}. +${item.energy} энергии.`);
+used = true;
+}
+if (item.food) {
+player.hunger = Math.min(100, (player.hunger || 0) + item.food);
+const hungerDisplay = document.getElementById("hunger");
+if (hungerDisplay) hungerDisplay.textContent = player.hunger;
+addLog(`Ты съел ${item.name}. +${item.food} голода.`);
+used = true;
+}
+if (!used) {
+addLog("Этот предмет нельзя использовать.");
+return;
+}
+item.count = (item.count || 1) - 1;
+if (item.count <= 0) {
+player.inventory.splice(index, 1);
+}
+localStorage.setItem("catData", JSON.stringify(player));
+closeInventory();
+}
+//МЕНЮ ИГРОКОВ
+function openPlayers() {
+const modal = document.getElementById('players-modal');
+if (!modal) return;
+modal.style.display = 'flex';
+displayOnlinePlayers();
+}
+function closePlayers() {
+const modal = document.getElementById('players-modal');
+if (modal) modal.style.display = 'none';
+}
+function toggleActions() {
+const panel = document.getElementById('actions-panel');
+if (panel) panel.classList.toggle('open');
 }
