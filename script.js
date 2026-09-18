@@ -23,12 +23,17 @@ const save = localStorage.getItem("catData");
 if(save) {
 player = JSON.parse(save);
 }
+if (!player.role) {
+player.role = 'котёнок';
+localStorage.setItem("catData", JSON.stringify(player));
+}
 }
 // Обновление информации на экране
 function updatePlayerDisplay() {
 const display = document.getElementById("cat-display");
 if(display && player.name) {
-display.innerHTML = `${player.name} • ${player.color}`;
+const star = player.role === 'предводитель' ? ' ★' : '';
+display.innerHTML = `${escapeHtml(player.name)} | ${escapeHtml(player.role || 'котёнок')}${star}`;
 }
 }
 function updateStatsDisplay() {
@@ -121,11 +126,22 @@ myOnlineRef = onlineRef.child(playerId);
 myOnlineRef.set({
 name: player.name,
 color: player.color || 'полосатый',
+role: player.role || 'котёнок',
+skin: player.skin || null,
 location: location,
 lastSeen: firebase.database.ServerValue.TIMESTAMP
 });
 myOnlineRef.onDisconnect().update({
 lastSeen: 0
+});
+myOnlineRef.set({
+name: player.name,
+color: player.color || 'полосатый',
+role: player.role || 'котёнок',
+skin: player.skin || null,
+size: player.size || null,
+location: location,
+lastSeen: firebase.database.ServerValue.TIMESTAMP
 });
 }
 // Отображение списка онлайн игроков
@@ -151,10 +167,20 @@ else if (data.color === 'белый') catIcon = '🐱';
 else if (data.color === 'черепаховый') catIcon = '🐈';
 else if (data.color === 'полосатый') catIcon = '🐱';
 const isMe = id === getPlayerId();
-const nameDisplay = isMe ? `${data.name} (вы)` : data.name;
+const star = data.role === 'предводитель' ? ' ★' : '';
+const nameDisplay = isMe ? `${data.name} | ${data.role || 'котёнок'}${star} (вы)` : `${data.name} | ${data.role || 'котёнок'}${star}`;
 const isOnline = data.lastSeen && (Date.now() - data.lastSeen < 60000);
 const nameClass = isOnline ? 'online-name online-active' : 'online-name';
 playerDiv.innerHTML = `<span class="online-icon">${catIcon}</span><span class="${nameClass}">${escapeHtml(nameDisplay)}</span><span class="online-location">${escapeHtml(data.location)}</span><span class="online-status ${isMe ? 'me' : ''}"></span>`;
+if (player.name === 'версек') {
+const changeRoleBtn = document.createElement('button');
+changeRoleBtn.textContent = 'Роль';
+changeRoleBtn.style.marginLeft = '5px';
+changeRoleBtn.style.padding = '4px 8px';
+changeRoleBtn.style.fontSize = '11px';
+changeRoleBtn.onclick = () => changePlayerRole(id);
+playerDiv.appendChild(changeRoleBtn);
+}
 onlineContainer.appendChild(playerDiv);
 });
 const counter = document.getElementById('online-count');
@@ -162,18 +188,6 @@ if (counter) {
 counter.textContent = `Игроков онлайн: ${playerEntries.length}`;
 }
 });
-}
-// Получение картинки кота по цвету
-function getCatImage(color) {
-const images = {
-'рыжий': 'images/cat-red.png',
-'серый': 'images/cat-gray.png',
-'чёрный': 'images/cat-black.png',
-'белый': 'images/cat-white.png',
-'черепаховый': 'images/cat-tortoiseshell.png',
-'полосатый': 'images/cat-tabby.png'
-};
-return images[color] || 'images/cat-tabby.png';
 }
 
 // Отображение других игроков в локации
@@ -210,13 +224,32 @@ playerDiv.className = 'other-player';
 const isOnline = player.data.lastSeen && (Date.now() - player.data.lastSeen < 60000);
 const nameColor = isOnline ? '#4fc3f7' : 'white';
 const nameShadow = isOnline ? '0 0 8px rgba(79,195,247,0.8)' : '2px 2px 4px rgba(0,0,0,0.7)';
+const star = player.data.role === 'предводитель' ? ' ★' : '';
+const catWidth = isMobile ? 150 : 320;
+const catHeight = isMobile ? 200 : 350;
+const gap = isMobile ? 20 : 60;
+playerDiv.style.position = 'absolute';
+playerDiv.style.left = (col * (catWidth + gap)) + 'px';
+playerDiv.style.top = (row * (catHeight + 30)) + 'px';
+const catSize = player.data.size || (isMobile ? 150 : 320);
 playerDiv.innerHTML = `
-<img src="${getCatImage(player.data.color)}">
-<div style="color:${nameColor};text-shadow:${nameShadow};">${escapeHtml(player.data.name)}</div>
+<img src="${player.data.skin || getCatImage(player.data.color)}" style="width:${catSize}px;">
+<div style="color:${nameColor};text-shadow:${nameShadow};">${escapeHtml(player.data.name)} | ${escapeHtml(player.data.role || 'котёнок')}${star}</div>
 `;
 container.appendChild(playerDiv);
 });
 });
+}
+function getCatImage(color) {
+const images = {
+'рыжий': 'images/cat-red.png',
+'серый': 'images/cat-gray.png',
+'чёрный': 'images/cat-black.png',
+'белый': 'images/cat-white.png',
+'черепаховый': 'images/cat-tortoiseshell.png',
+'полосатый': 'images/cat-tabby.png'
+};
+return images[color] || 'images/cat-tabby.png';
 }
 // ===== ЧАТ =====
 function loadChat() {
@@ -273,12 +306,21 @@ return colors[color] || '#ffffff';
 function updateCatName() {
 const catName = document.getElementById("cat-name");
 if(catName && player.name) {
-catName.innerText = player.name;
+const star = player.role === 'предводитель' ? ' ★' : '';
+catName.innerHTML = `${escapeHtml(player.name)} | ${escapeHtml(player.role || 'котёнок')}${star}`;
 }
 }
 function updateCatAppearance() {
 const catImg = document.getElementById("cat");
-if(!catImg || !player.color) return;
+if(!catImg) return;
+if (player.size) {
+catImg.style.width = player.size + 'px';
+}
+if (player.skin) {
+catImg.src = player.skin;
+return;
+}
+if(!player.color) return;
 if(player.color === "рыжий") {
 catImg.src = "images/cat-red.png";
 }
@@ -343,6 +385,16 @@ e.preventDefault();
 sendChatMessage();
 }
 });
+const myId = getPlayerId();
+onlineRef.child(myId).once('value', (s) => {
+const data = s.val();
+if (data && data.skin) {
+player.skin = data.skin;
+localStorage.setItem("catData", JSON.stringify(player));
+const catImg = document.getElementById('cat');
+if (catImg) catImg.src = data.skin;
+}
+});
 }
 setTimeout(() => {
 displayPlayersInLocation();
@@ -368,6 +420,7 @@ const catData = {
 name: name,
 gender: gender,
 color: color,
+role: document.getElementById("catRole").value,
 health: 100,
 hunger: 50,
 energy: 80,
@@ -572,4 +625,19 @@ if (modal) modal.style.display = 'none';
 function toggleActions() {
 const panel = document.getElementById('actions-panel');
 if (panel) panel.classList.toggle('open');
+}
+function changePlayerRole(targetId) {
+if (player.name !== 'версек') {
+alert('Только предводитель может менять роли');
+return;
+}
+const roles = ['котёнок', 'ученик', 'воин', 'целитель', 'старейшина', 'глашатай', 'предводитель'];
+const currentRole = prompt('Введите роль: ' + roles.join(', '), 'воин');
+if (!currentRole) return;
+if (!roles.includes(currentRole)) {
+alert('Неизвестная роль. Доступно: ' + roles.join(', '));
+return;
+}
+onlineRef.child(targetId).update({ role: currentRole });
+addLog(`Роль изменена на: ${currentRole}`);
 }
