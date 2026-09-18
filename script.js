@@ -229,8 +229,8 @@ const catWidth = isMobile ? 150 : 320;
 const catHeight = isMobile ? 200 : 350;
 const gap = isMobile ? 20 : 60;
 playerDiv.style.position = 'absolute';
-playerDiv.style.left = (col * (catWidth + gap)) + 'px';
-playerDiv.style.top = (row * (catHeight + 30)) + 'px';
+playerDiv.style.left = (200 + col * (catWidth + gap)) + 'px';
+playerDiv.style.bottom = (10 + row * (catHeight + 30)) + 'px';
 const catSize = player.data.size || (isMobile ? 150 : 320);
 playerDiv.innerHTML = `
 <img src="${player.data.skin || getCatImage(player.data.color)}" style="width:${catSize}px;">
