@@ -163,6 +163,18 @@ counter.textContent = `Игроков онлайн: ${playerEntries.length}`;
 }
 });
 }
+// Получение картинки кота по цвету
+function getCatImage(color) {
+const images = {
+'рыжий': 'images/cat-red.png',
+'серый': 'images/cat-gray.png',
+'чёрный': 'images/cat-black.png',
+'белый': 'images/cat-white.png',
+'черепаховый': 'images/cat-tortoiseshell.png',
+'полосатый': 'images/cat-tabby.png'
+};
+return images[color] || 'images/cat-tabby.png';
+}
 
 // Отображение других игроков в локации
 function displayPlayersInLocation() {
