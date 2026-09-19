@@ -25,15 +25,20 @@ player = JSON.parse(save);
 }
 if (!player.role) {
 player.role = 'котёнок';
-localStorage.setItem("catData", JSON.stringify(player));
 }
+if (!player.numericId) {
+const saved = localStorage.getItem("numericId");
+if (saved) player.numericId = saved;
+}
+localStorage.setItem("catData", JSON.stringify(player));
 }
 // Обновление информации на экране
 function updatePlayerDisplay() {
 const display = document.getElementById("cat-display");
 if(display && player.name) {
 const star = player.role === 'предводитель' ? ' ★' : '';
-display.innerHTML = `${escapeHtml(player.name)} | ${escapeHtml(player.role || 'котёнок')}${star}`;
+const idText = player.numericId ? `#${player.numericId} ` : '';
+display.innerHTML = `${idText}${escapeHtml(player.name)} | ${escapeHtml(player.role || 'котёнок')}${star}`;
 }
 }
 function updateStatsDisplay() {
@@ -101,6 +106,7 @@ return playerId;
 function getCurrentLocation() {
 const path = window.location.pathname;
 const page = path.split('/').pop();
+if (page.includes('forest2')) return 'Лес-04';
 if (page.includes('forest')) return 'Лес-01';
 if (page.includes('river')) return 'Река-02';
 if (page.includes('camp')) return 'Лагерь';
@@ -143,6 +149,15 @@ size: player.size || null,
 location: location,
 lastSeen: firebase.database.ServerValue.TIMESTAMP
 });
+myOnlineRef.set({
+name: player.name,
+color: player.color || 'полосатый',
+role: player.role || 'котёнок',
+skin: player.skin || null,
+numericId: player.numericId || '00',
+location: location,
+lastSeen: firebase.database.ServerValue.TIMESTAMP
+});
 }
 // Отображение списка онлайн игроков
 function displayOnlinePlayers() {
@@ -168,7 +183,8 @@ else if (data.color === 'черепаховый') catIcon = '🐈';
 else if (data.color === 'полосатый') catIcon = '🐱';
 const isMe = id === getPlayerId();
 const star = data.role === 'предводитель' ? ' ★' : '';
-const nameDisplay = isMe ? `${data.name} | ${data.role || 'котёнок'}${star} (вы)` : `${data.name} | ${data.role || 'котёнок'}${star}`;
+const idText = data.numericId ? `#${data.numericId} ` : '';
+const nameDisplay = isMe ? `${idText}${data.name} | ${data.role || 'котёнок'}${star} (вы)` : `${idText}${data.name} | ${data.role || 'котёнок'}${star}`;
 const isOnline = data.lastSeen && (Date.now() - data.lastSeen < 60000);
 const nameClass = isOnline ? 'online-name online-active' : 'online-name';
 playerDiv.innerHTML = `<span class="online-icon">${catIcon}</span><span class="${nameClass}">${escapeHtml(nameDisplay)}</span><span class="online-location">${escapeHtml(data.location)}</span><span class="online-status ${isMe ? 'me' : ''}"></span>`;
@@ -193,16 +209,11 @@ counter.textContent = `Игроков онлайн: ${playerEntries.length}`;
 // Отображение других игроков в локации
 function displayPlayersInLocation() {
 const container = document.getElementById('other-players');
-if (!container) {
-console.log('Нет контейнера other-players');
-return;
-}
+if (!container) return;
 const currentLocation = getCurrentLocation();
 const myId = getPlayerId();
-console.log('Текущая локация:', currentLocation, 'Мой ID:', myId);
 onlineRef.on('value', (snapshot) => {
 const players = snapshot.val();
-console.log('Игроки из Firebase:', players);
 if (!players) return;
 container.innerHTML = '';
 let otherPlayers = [];
@@ -211,29 +222,20 @@ if (id !== myId && data.location === currentLocation) {
 otherPlayers.push({id, data});
 }
 });
-console.log('Другие игроки в локации:', otherPlayers);
-const isMobile = window.innerWidth <= 768;
+const isMobile = window.innerWidth <= 1024;
 const catsPerRow = isMobile ? 2 : 4;
-const catWidth = isMobile ? 150 : 320;
+const catWidth = isMobile ? 300 : 320;
 const catHeight = isMobile ? 200 : 350;
+const gap = isMobile ? 20 : 60;
 otherPlayers.forEach((player, index) => {
-const row = Math.floor(index / catsPerRow);
-const col = index % catsPerRow;
 const playerDiv = document.createElement('div');
 playerDiv.className = 'other-player';
 const isOnline = player.data.lastSeen && (Date.now() - player.data.lastSeen < 60000);
 const nameColor = isOnline ? '#4fc3f7' : 'white';
 const nameShadow = isOnline ? '0 0 8px rgba(79,195,247,0.8)' : '2px 2px 4px rgba(0,0,0,0.7)';
 const star = player.data.role === 'предводитель' ? ' ★' : '';
-const catWidth = isMobile ? 150 : 320;
-const catHeight = isMobile ? 200 : 350;
-const gap = isMobile ? 20 : 60;
-playerDiv.style.position = 'absolute';
-playerDiv.style.left = (140 + col * (catWidth + gap)) + 'px';
-playerDiv.style.bottom = (10 + row * (catHeight + 30)) + 'px';
-const catSize = player.data.size || (isMobile ? 150 : 320);
 playerDiv.innerHTML = `
-<img src="${player.data.skin || getCatImage(player.data.color)}" style="width:${catSize}px;">
+<img src="${player.data.skin || getCatImage(player.data.color)}">
 <div style="color:${nameColor};text-shadow:${nameShadow};">${escapeHtml(player.data.name)} | ${escapeHtml(player.data.role || 'котёнок')}${star}</div>
 `;
 container.appendChild(playerDiv);
@@ -307,7 +309,8 @@ function updateCatName() {
 const catName = document.getElementById("cat-name");
 if(catName && player.name) {
 const star = player.role === 'предводитель' ? ' ★' : '';
-catName.innerHTML = `${escapeHtml(player.name)} | ${escapeHtml(player.role || 'котёнок')}${star}`;
+const idText = player.numericId ? `#${player.numericId} ` : '';
+catName.innerHTML = `${idText}${escapeHtml(player.name)} | ${escapeHtml(player.role || 'котёнок')}${star}`;
 }
 }
 function updateCatAppearance() {
@@ -344,7 +347,8 @@ catImg.src = "images/cat-tabby.png";
 var LOCATION_BY_CODE = {
 6020: "river.html",
 6014: "camp.html",
-1001: "forest.html"
+1001: "forest.html",
+1002: "forest2.html"
 };
 function moving(code, theme) {
 const url = LOCATION_BY_CODE[code];
@@ -416,11 +420,13 @@ function saveCharacter() {
 let name = document.getElementById("catName").value;
 let gender = document.getElementById("catGender").value;
 let color = document.getElementById("catColor").value;
+getNumericId((numericId) => {
 const catData = {
 name: name,
 gender: gender,
 color: color,
 role: document.getElementById("catRole").value,
+numericId: numericId,
 health: 100,
 hunger: 50,
 energy: 80,
@@ -431,6 +437,7 @@ inventory: []
 };
 localStorage.setItem("catData", JSON.stringify(catData));
 window.location.href = "forest.html";
+});
 }
 function loadGame() {
 const save = localStorage.getItem("catData");
@@ -508,9 +515,10 @@ const container = document.getElementById('items-on-ground');
 if (!container) return;
 const currentLocation = getCurrentLocation();
 let locationKey = 'camp';
-if (currentLocation.includes('Лес')) locationKey = 'forest';
-if (currentLocation.includes('Река')) locationKey = 'river';
-if (currentLocation.includes('Лагерь')) locationKey = 'camp';
+if (currentLocation === 'Лес-01') locationKey = 'forest';
+if (currentLocation === 'Лес-04') locationKey = 'forest2';
+if (currentLocation === 'Река-02') locationKey = 'river';
+if (currentLocation === 'Лагерь') locationKey = 'camp';
 itemsRef.child(locationKey).on('value', (snapshot) => {
 const items = snapshot.val();
 container.innerHTML = '';
@@ -563,6 +571,7 @@ let locationKey = 'camp';
 if (currentLocation.includes('Лес')) locationKey = 'forest';
 if (currentLocation.includes('Река')) locationKey = 'river';
 if (currentLocation.includes('Лагерь')) locationKey = 'camp';
+if (currentLocation.includes('лес2')) locationKey = 'forest2';
 const x = 500 + Math.random() * 400;
 const y = 400 + Math.random() * 200;
 const dropData = {
@@ -640,4 +649,21 @@ return;
 }
 onlineRef.child(targetId).update({ role: currentRole });
 addLog(`Роль изменена на: ${currentRole}`);
+}
+function getNumericId(callback) {
+let numericId = localStorage.getItem("numericId");
+if (numericId) {
+callback(numericId);
+return;
+}
+const counterRef = db.ref('counter');
+counterRef.transaction((current) => {
+return (current || 0) + 1;
+}, (error, committed, snapshot) => {
+if (committed) {
+const newId = String(snapshot.val()).padStart(2, '0');
+localStorage.setItem("numericId", newId);
+callback(newId);
+}
+});
 }
