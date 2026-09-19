@@ -556,30 +556,6 @@ margin:5px 0;
 font-size:14px;
 }
 
-@media (max-width: 768px) {
-#cat-container{
-position: relative;
-margin: 20px auto;
-left: auto;
-bottom: auto;
-width: 220px;
-text-align: center;
-}
-#cat{
-width: 150px;
-}
-#other-players {
-margin: 20px 10px;
-padding: 10px;
-}
-.other-player {
-width: 180px;
-margin: 10px;
-}
-.other-player div {
-font-size: 16px;
-}
-}
 .cats-field {
 display: flex;
 flex-wrap: wrap;
@@ -612,4 +588,28 @@ vertical-align: top;
 text-align: center;
 margin: 0;
 width: 220px;
+}
+@media (max-width: 768px) {
+.cats-field {
+margin-top: 500px;
+padding: 10px;
+gap: 10px;
+}
+#cat-container {
+width: 220px;
+}
+#cat {
+width: 150px;
+}
+#other-players {
+max-width: 100%;
+gap: 10px;
+}
+.other-player {
+width: 150px;
+margin: 5px;
+}
+.other-player div {
+font-size: 14px;
+}
 }
