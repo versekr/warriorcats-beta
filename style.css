@@ -76,6 +76,125 @@ background-repeat: repeat;
 background-attachment: fixed;
 background-size: 300px;
 }
+.path {
+    background-image: url("images/path.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 1800px;
+}
+
+.moonstone {
+    background-image: url("images/moonstone.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 1800px;
+}
+
+.centre {
+    background-image: url("images/centre.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 1800px;
+}
+
+.lawn {
+    background-image: url("images/lawn.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 1800px;
+}
+
+.litlecawe {
+    background-image: url("images/litlecawe.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 1800px;
+}
+
+.healden {
+    background-image: url("images/healden.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 1800px;
+}
+
+.sharprock {
+    background-image: url("images/sharprock.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 1800px;
+}
+
+.leaderden {
+    background-image: url("images/leaderden.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 1800px;
+}
+
+.kitden {
+    background-image: url("images/kitden.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 1800px;
+}
+
+.elderden {
+    background-image: url("images/elderden.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 1800px;
+}
+
+.driedlog {
+    background-image: url("images/driedlog.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 1800px;
+}
+
+.mossmink {
+    background-image: url("images/mossmink.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 1800px;
+}
+
+.studentden {
+    background-image: url("images/studentden.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 1800px;
+}
+
+.suncaves {
+    background-image: url("images/suncaves.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 1800px;
+}
+
+.warriorden {
+    background-image: url("images/warriorden.jpg");
+    background-position: center;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: 1800px;
+}
 body::before{
 content:'';
 position:fixed;
@@ -320,7 +439,7 @@ transform:translateY(-2px);
 #nest-container {
 position: fixed;
 bottom: 30%;
-right: 30px;
+right: 400px;
 left: auto;
 transform: none;
 z-index: 60;
@@ -556,6 +675,30 @@ margin:5px 0;
 font-size:14px;
 }
 
+@media (max-width: 768px) {
+#cat-container{
+position: relative;
+margin: 20px auto;
+left: auto;
+bottom: auto;
+width: 220px;
+text-align: center;
+}
+#cat{
+width: 150px;
+}
+#other-players {
+margin: 20px 10px;
+padding: 10px;
+}
+.other-player {
+width: 180px;
+margin: 10px;
+}
+.other-player div {
+font-size: 16px;
+}
+}
 .cats-field {
 display: flex;
 flex-wrap: wrap;
@@ -588,28 +731,4 @@ vertical-align: top;
 text-align: center;
 margin: 0;
 width: 220px;
-}
-@media (max-width: 768px) {
-.cats-field {
-margin-top: 500px;
-padding: 10px;
-gap: 10px;
-}
-#cat-container {
-width: 220px;
-}
-#cat {
-width: 150px;
-}
-#other-players {
-max-width: 100%;
-gap: 10px;
-}
-.other-player {
-width: 150px;
-margin: 5px;
-}
-.other-player div {
-font-size: 14px;
-}
 }
