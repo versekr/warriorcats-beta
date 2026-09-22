@@ -109,6 +109,21 @@ const page = path.split('/').pop();
 if (page.includes('forest2')) return 'Лес-04';
 if (page.includes('forest')) return 'Лес-01';
 if (page.includes('river')) return 'Река-02';
+if (page.includes('path')) return 'тропа';
+if (page.includes('???')) return '???';
+if (page.includes('centre')) return 'центр';
+if (page.includes('driedlog')) return 'бревно';
+if (page.includes('elderden')) return 'старейшины';
+if (page.includes('healden')) return 'целитель';
+if (page.includes('kitden')) return 'детская';
+if (page.includes('lawn')) return 'лужайка';
+if (page.includes('litlecawe')) return 'пещерка';
+if (page.includes('mossmink')) return 'мховаяяма';
+if (page.includes('sharprock')) return 'скала';
+if (page.includes('studentden')) return 'ученики';
+if (page.includes('suncaves')) return 'пещеры';
+if (page.includes('warriorden')) return 'воины';
+if (page.includes('leaderden')) return 'лидерская';
 if (page.includes('camp')) return 'Лагерь';
 return 'Неизвестно';
 }
@@ -348,7 +363,22 @@ var LOCATION_BY_CODE = {
 6020: "river.html",
 6014: "camp.html",
 1001: "forest.html",
-1002: "forest2.html"
+1002: "forest2.html",
+1003: "path.html",
+1004: "moonstone.html",
+1005: "centre.html",
+1006: "lawn.html",
+1007: "litlecawe.html",
+1008: "healden.html",
+1009: "sharprock.html",
+1010: "leaderden.html",
+1011: "kitden.html",
+1012: "elderden.html",
+1013: "driedlog.html",
+1014: "mossmink.html",
+1015: "studentden.html",
+1016: "suncaves.html",
+1017: "warriorden.html"
 };
 function moving(code, theme) {
 const url = LOCATION_BY_CODE[code];
@@ -518,6 +548,21 @@ let locationKey = 'camp';
 if (currentLocation === 'Лес-01') locationKey = 'forest';
 if (currentLocation === 'Лес-04') locationKey = 'forest2';
 if (currentLocation === 'Река-02') locationKey = 'river';
+if (currentLocation === 'тропа') locationKey = 'path';
+if (currentLocation === 'центр') locationKey = 'centere';
+if (currentLocation === 'лужайка') locationKey = 'lawn';
+if (currentLocation === 'целитель') locationKey = 'healden';
+if (currentLocation === 'лидерская') locationKey = 'leaderden';
+if (currentLocation === 'старейшины') locationKey = 'elderden';
+if (currentLocation === 'ученики') locationKey = 'studentden';
+if (currentLocation === 'бревно') locationKey = 'driedlog';
+if (currentLocation === 'детская') locationKey = 'kitden';
+if (currentLocation === 'пещерка') locationKey = 'litlecawe';
+if (currentLocation === 'мховаяямка') locationKey = 'mossmink';
+if (currentLocation === 'скала') locationKey = 'sharprock';
+if (currentLocation === 'пещеры') locationKey = 'suncaves';
+if (currentLocation === 'воины') locationKey = 'warriorden';
+if (currentLocation === '???') locationKey = 'moonstone';
 if (currentLocation === 'Лагерь') locationKey = 'camp';
 itemsRef.child(locationKey).on('value', (snapshot) => {
 const items = snapshot.val();
@@ -568,10 +613,25 @@ if (!player.inventory || !player.inventory[index]) return;
 const item = player.inventory[index];
 const currentLocation = getCurrentLocation();
 let locationKey = 'camp';
-if (currentLocation.includes('Лес')) locationKey = 'forest';
+if (currentLocation.includes('Лес-01')) locationKey = 'forest';
+if (currentLocation.includes('Лес-04')) locationKey = 'forest2';
 if (currentLocation.includes('Река')) locationKey = 'river';
+if (currentLocation.includes('тропа')) locationKey = 'path';
+if (currentLocation.includes('центр')) locationKey = 'centere';
+if (currentLocation.includes('лужайка')) locationKey = 'lawn';
+if (currentLocation.includes('целитель')) locationKey = 'healden';
+if (currentLocation.includes('лидерская')) locationKey = 'leaderden';
+if (currentLocation.includes('старейшины')) locationKey = 'elderden';
+if (currentLocation.includes('ученики')) locationKey = 'studentden';
+if (currentLocation.includes('бревно')) locationKey = 'driedlog';
+if (currentLocation.includes('детская')) locationKey = 'kitden';
+if (currentLocation.includes('пещерка')) locationKey = 'litlecawe';
+if (currentLocation.includes('мховая')) locationKey = 'mossmink';
+if (currentLocation.includes('скала')) locationKey = 'sharprock';
+if (currentLocation.includes('пещеры')) locationKey = 'suncaves';
+if (currentLocation.includes('воины')) locationKey = 'warriorden';
+if (currentLocation.includes('???')) locationKey = 'moonstone';
 if (currentLocation.includes('Лагерь')) locationKey = 'camp';
-if (currentLocation.includes('лес2')) locationKey = 'forest2';
 const x = 500 + Math.random() * 400;
 const y = 400 + Math.random() * 200;
 const dropData = {
