@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Коты Воители</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Podkova:wght@400;600;700&family=PT+Sans:wght@400;700&family=PT+Sans+Caption:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>Коты Воители</h1>
+<h2>Бета версия</h2>
+
+<div id="start-screen">
+<button onclick="showLogin()">Войти</button>
+<button onclick="showRegister()">Создать нового кота</button>
+</div>
+
+<div id="login-screen" style="display:none;">
+<h2>Вход</h2>
+<label for="loginName">Логин:</label><br>
+<input type="text" id="loginName" maxlength="20"><br>
+<label for="loginPass">Пароль:</label><br>
+<input type="password" id="loginPass" maxlength="30"><br><br>
+<button onclick="loginAccount()">Войти</button>
+<button onclick="showStart()" style="margin-left:10px;background:#666;">Назад</button>
+<div id="login-error" style="color:#ff6b6b;margin-top:10px;font-weight:bold;"></div>
+</div>
+
+<div id="character-creation" style="display:none;">
+<h2>Создание персонажа</h2>
+<label for="catLogin">Логин (латиница, 3-20):</label><br>
+<input type="text" id="catLogin" maxlength="20"><br>
+<label for="catPassword">Пароль (от 4 символов):</label><br>
+<input type="password" id="catPassword" maxlength="30"><br>
+<label for="catName">Имя кота:</label><br>
+<input type="text" id="catName"><br>
+<label for="catGender">Пол:</label><br>
+<select id="catGender">
+<option value="tom">Кот</option>
+<option value="she-cat">Кошка</option>
+</select><br>
+<label for="catColor">Окрас:</label><br>
+<select id="catColor">
+<option value="рыжий">Рыжий</option>
+<option value="серый">Серый</option>
+<option value="чёрный">Чёрный</option>
+<option value="белый">Белый</option>
+<option value="черепаховый">Черепаховый</option>
+<option value="полосатый">Полосатый</option>
+</select><br>
+<label for="catRole">Роль:</label><br>
+<select id="catRole">
+<option value="котёнок">Котёнок</option>
+<option value="ученик">Ученик</option>
+<option value="воин">Воин</option>
+<option value="целитель">Целитель</option>
+<option value="старейшина">Старейшина</option>
+<option value="глашатай">Глашатай</option>
+<option value="предводитель">Предводитель</option>
+</select><br><br>
+<button onclick="saveCharacter()">Создать кота и начать игру!</button>
+<button onclick="showStart()" style="margin-left:10px;background:#666;">Назад</button>
+<div id="register-error" style="color:#ff6b6b;margin-top:10px;font-weight:bold;"></div>
+</div>
+
+<div class="contact-block">
+<h2>Связь с разработчиком</h2>
+<p>Нашли баг? Есть идея? Пишите!</p>
+<div class="contact-links">
+<a href="https://t.me/damnr_444" target="_blank" class="contact-btn">Telegram</a>
+<a href="https://t.me/damnr_444?text=Привет, нашёл баг в игре: " target="_blank" class="contact-btn">Сообщить о баге</a>
+</div>
+</div>
+
+<div class="version-info">
+<p>Warrior Cats Beta v0.4</p>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="script.js"></script>
+<script src="auth.js"></script>
+</body>
+</html>

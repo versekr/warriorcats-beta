@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Профиль</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Podkova:wght@400;600;700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="profile-page forest">
+<h1>ваш профиль</h1>
+<h2>Добро пожаловать, <span id="profile-name"></span>!</h2>
+
+<div class="profile-card">
+<img id="profile-cat" src="images/cat-tabby.png">
+<div id="profile-title"></div>
+</div>
+
+<div class="profile-stats">
+<div class="profile-row"><span class="profile-label"> Лун:</span><span id="profile-moons">0</span></div>
+<div class="profile-row"><span class="profile-label"> Здоровье:</span><span id="profile-health">100</span></div>
+<div class="profile-row"><span class="profile-label"> Голод:</span><span id="profile-hunger">50</span></div>
+<div class="profile-row"><span class="profile-label"> Жажда:</span><span id="profile-thirst">50</span></div>
+<div class="profile-row"><span class="profile-label"> Энергия:</span><span id="profile-energy">80</span></div>
+<div class="profile-row"><span class="profile-label"> Уровень:</span><span id="profile-level">1</span></div>
+<div class="profile-row"><span class="profile-label"> Сила:</span><span id="profile-strength">10</span></div>
+<div class="profile-row"><span class="profile-label"> Ловкость:</span><span id="profile-agility">12</span></div>
+</div>
+
+<button class="profile-btn" onclick="goToGame()">Войти в игру</button>
+<button class="profile-btn secondary" onclick="logoutAccount()">Выйти из аккаунта</button>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="script.js"></script>
+<script src="auth.js"></script>
+</body>
+</html>
