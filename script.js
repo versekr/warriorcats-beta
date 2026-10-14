@@ -269,20 +269,7 @@ document.addEventListener('keyup', (e) => {
 
     const k = e.key.toLowerCase();
     keys[k] = false;
-<<<<<<< HEAD
-
-=======
 }, true);
-// Тап/клик по экрану (мобилка)
-document.addEventListener('click', (e) => {
-    // Игнорируем клики по интерфейсу
-    if (e.target.closest('.left-panel, .panel-container, button, .condition-modal, .inventory-modal, .players-modal, .ground-item, .other-player, #cave-icon, #water-icon, #nest-container')) return;
-    targetX = e.clientX;
-    targetY = e.clientY;
-});
-
-
->>>>>>> 5fdcf06e058e2dd2ff562889533427d22ad86bcf
 // Тап/клик по экрану (мобилка)
 document.addEventListener('click', (e) => {
     // Игнорируем клики по интерфейсу
@@ -1383,12 +1370,7 @@ return `<div class="vit-bar"><div class="${cls}" style="width:${pct}%"></div></d
 }
 
 let html = '';
-html += `<div class="inspect-cat-wrapper">`;
 html += `<img src="${data.skin || getCatImage(data.color)}" class="inspect-cat-img">`;
-if (data.eyes && EYE_COLORS[data.eyes]) {
-html += `<img src="${EYE_COLORS[data.eyes]}" class="inspect-cat-eyes">`;
-}
-html += `</div>`;
 html += `<div class="inspect-name">${escapeHtml(data.name)} | ${escapeHtml(data.role || 'котёнок')}</div>`;
 
 // Здоровье
