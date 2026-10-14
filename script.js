@@ -242,6 +242,11 @@ let lastPosSend = 0;
 
 // Клавиатура
 document.addEventListener('keydown', (e) => {
+    // Не перехватываем если фокус в поле ввода
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+    if (e.target.isContentEditable) return;
+
     const k = e.key.toLowerCase();
     if (['w','a','s','d','ц','ф','ы','в','arrowup','arrowdown','arrowleft','arrowright'].includes(k)) {
         keys[k] = true;
@@ -249,6 +254,14 @@ document.addEventListener('keydown', (e) => {
         targetY = null;
         e.preventDefault();
     }
+});
+document.addEventListener('keyup', (e) => {
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+    if (e.target.isContentEditable) return;
+
+    const k = e.key.toLowerCase();
+    keys[k] = false;
 });
 document.addEventListener('keyup', (e) => {
     const k = e.key.toLowerCase();
