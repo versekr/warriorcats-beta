@@ -269,6 +269,9 @@ document.addEventListener('keyup', (e) => {
 
     const k = e.key.toLowerCase();
     keys[k] = false;
+<<<<<<< HEAD
+
+=======
 }, true);
 // Тап/клик по экрану (мобилка)
 document.addEventListener('click', (e) => {
@@ -279,6 +282,7 @@ document.addEventListener('click', (e) => {
 });
 
 
+>>>>>>> 5fdcf06e058e2dd2ff562889533427d22ad86bcf
 // Тап/клик по экрану (мобилка)
 document.addEventListener('click', (e) => {
     // Игнорируем клики по интерфейсу
@@ -672,6 +676,7 @@ const currentLoc = getCurrentLocation();
 let locKey = 'camp';
 if (currentLoc === 'Лес-01') locKey = 'forest';
 if (currentLoc === 'Лес-04') locKey = 'forest2';
+if (currentLoc === 'скала') locKey = 'sharprock';
 if (currentLoc === 'тропа') locKey = 'path';
 startHerbSpawner(locKey);
 }
@@ -1725,6 +1730,7 @@ const herbsForLocation = {
 'path': 'garlic',
 'forest': 'feverfew',
 'forest2': 'borage',
+'sharprock': 'juniper'
 };
 const herbKey = herbsForLocation[locationKey];
 if (!herbKey) return; // в этой локации трав нет
