@@ -30,6 +30,10 @@
 
 <div id="character-creation" style="display:none;">
 <h2>Создание персонажа</h2>
+
+<div class="creation-layout">
+<!-- Левая часть — форма -->
+<div class="creation-form">
 <label for="catLogin">Логин (латиница, 3-20):</label><br>
 <input type="text" id="catLogin" maxlength="20"><br>
 <label for="catPassword">Пароль (от 4 символов):</label><br>
@@ -41,15 +45,6 @@
 <option value="tom">Кот</option>
 <option value="she-cat">Кошка</option>
 </select><br>
-<label for="catColor">Окрас:</label><br>
-<select id="catColor">
-<option value="рыжий">Рыжий</option>
-<option value="серый">Серый</option>
-<option value="чёрный">Чёрный</option>
-<option value="белый">Белый</option>
-<option value="черепаховый">Черепаховый</option>
-<option value="полосатый">Полосатый</option>
-</select><br>
 <label for="catRole">Роль:</label><br>
 <select id="catRole">
 <option value="котёнок">Котёнок</option>
@@ -59,10 +54,30 @@
 <option value="старейшина">Старейшина</option>
 <option value="глашатай">Глашатай</option>
 <option value="предводитель">Предводитель</option>
-</select><br><br>
+</select><br>
+
+<label>Окрас:</label><br>
+<div id="color-options" class="options-row"></div>
+
+<label>Глаза:</label><br>
+<div id="eyes-options" class="options-row"></div>
+
 <button onclick="saveCharacter()">Создать кота и начать игру!</button>
 <button onclick="showStart()" style="margin-left:10px;background:#666;">Назад</button>
 <div id="register-error" style="color:#ff6b6b;margin-top:10px;font-weight:bold;"></div>
+</div>
+
+<!-- Правая часть — предпросмотр -->
+<div class="creation-preview">
+<h3>Предпросмотр</h3>
+<div class="preview-cat-wrapper">
+<img id="preview-cat" src="images/cat-tabby.png">
+<img id="preview-eyes" src="images/eyes-amber.png">
+</div>
+<div id="preview-name" class="preview-name">Имя кота</div>
+<div id="preview-title" class="preview-title">котёнок</div>
+</div>
+</div>
 </div>
 
 <div class="contact-block">
