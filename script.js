@@ -1354,7 +1354,12 @@ return `<div class="vit-bar"><div class="${cls}" style="width:${pct}%"></div></d
 }
 
 let html = '';
+html += `<div class="inspect-cat-wrapper">`;
 html += `<img src="${data.skin || getCatImage(data.color)}" class="inspect-cat-img">`;
+if (data.eyes && EYE_COLORS[data.eyes]) {
+html += `<img src="${EYE_COLORS[data.eyes]}" class="inspect-cat-eyes">`;
+}
+html += `</div>`;
 html += `<div class="inspect-name">${escapeHtml(data.name)} | ${escapeHtml(data.role || 'котёнок')}</div>`;
 
 // Здоровье
