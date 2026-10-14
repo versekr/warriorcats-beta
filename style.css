@@ -261,7 +261,30 @@ color: var(--white);
 color: var(--light-gold);
 font-weight: bold;
 }
+#inspect-modal .inspect-cat-wrapper {
+position: relative;
+display: block;
+width: 200px;
+height: 200px;
+margin: 0 auto 15px auto;
+}
 
+#inspect-modal .inspect-cat-img {
+display: block;
+width: 200px;
+margin: 0;
+filter: drop-shadow(0 0 12px rgba(0, 255, 65, 0.6));
+}
+
+#inspect-modal .inspect-cat-eyes {
+position: absolute;
+top: 0;
+left: 0;
+width: 200px;
+z-index: 2;
+pointer-events: none;
+filter: drop-shadow(0 0 6px rgba(0, 255, 65, 0.8));
+}
 .location-info {
 position:fixed;
 top:355px;
