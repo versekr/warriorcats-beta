@@ -242,10 +242,13 @@ let lastPosSend = 0;
 
 // Клавиатура
 document.addEventListener('keydown', (e) => {
-    // Не перехватываем если фокус в поле ввода
     const tag = (e.target.tagName || '').toLowerCase();
-    if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
-    if (e.target.isContentEditable) return;
+    const inInput = tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable;
+
+    if (inInput) {
+        e.stopImmediatePropagation();
+        return;
+    }
 
     const k = e.key.toLowerCase();
     if (['w','a','s','d','ц','ф','ы','в','arrowup','arrowdown','arrowleft','arrowright'].includes(k)) {
@@ -254,19 +257,27 @@ document.addEventListener('keydown', (e) => {
         targetY = null;
         e.preventDefault();
     }
-});
+}, true);
 document.addEventListener('keyup', (e) => {
     const tag = (e.target.tagName || '').toLowerCase();
-    if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
-    if (e.target.isContentEditable) return;
+    const inInput = tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable;
+
+    if (inInput) {
+        e.stopImmediatePropagation();
+        return;
+    }
 
     const k = e.key.toLowerCase();
     keys[k] = false;
+}, true);
+// Тап/клик по экрану (мобилка)
+document.addEventListener('click', (e) => {
+    // Игнорируем клики по интерфейсу
+    if (e.target.closest('.left-panel, .panel-container, button, .condition-modal, .inventory-modal, .players-modal, .ground-item, .other-player, #cave-icon, #water-icon, #nest-container')) return;
+    targetX = e.clientX;
+    targetY = e.clientY;
 });
-document.addEventListener('keyup', (e) => {
-    const k = e.key.toLowerCase();
-    keys[k] = false;
-});
+
 
 // Тап/клик по экрану (мобилка)
 document.addEventListener('click', (e) => {
