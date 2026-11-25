@@ -483,16 +483,6 @@ document.addEventListener('keyup', (e) => {
     const k = e.key.toLowerCase();
     keys[k] = false;
 }, true);
-// Тап/клик по экрану (мобилка)
-document.addEventListener('click', (e) => {
-    if (useMobileJoystick) return;
-    if (isGameModalOpen()) return;
-    // Игнорируем клики по интерфейсу
-    if (e.target.closest('.left-panel, .panel-container, button, .condition-modal, .inventory-modal, .players-modal, .ground-item, .other-player, #cave-icon, #water-icon, #nest-container')) return;
-    targetX = e.clientX;
-    targetY = e.clientY;
-});
-
 // Основной цикл движения
 function moveLoop(now) {
     const dt = (now - lastMoveTime) / 1000;
@@ -2052,21 +2042,39 @@ addLog('Не удалось отправить лечение. Повязка н
 return;
 }
 const t = { type: type, part: type === 'cure' ? null : selectedPart, by: player.name };
+let herbToConsume = null;
 if (herbIndex !== undefined) {
 const item = player.inventory && player.inventory[herbIndex];
 if (!item || item.type !== 'herb' || item.raw) return;
 t.heals = item.heals || 10;
 t.cures = item.cures || null;
-item.count = (item.count || 1) - 1;
-if (item.count <= 0) player.inventory.splice(herbIndex, 1);
+herbToConsume = item;
+}
+if (targetId === getPlayerId()) {
+if (herbToConsume) {
+consumeInventoryItem(herbToConsume);
 localStorage.setItem("catData", JSON.stringify(player));
 if (typeof saveAccount === 'function') saveAccount();
 }
-if (targetId === getPlayerId()) {
 applyTreatment(t);
 } else {
-onlineRef.child(targetId).child('treatments').push(t);
-addLog('Ты оказываешь помощь...');
+onlineRef.child(targetId).once('value').then((snapshot) => {
+if (!snapshot.exists()) throw new Error('Пациент больше не в сети.');
+return onlineRef.child(targetId).child('treatments').push(t);
+}).then(() => {
+if (herbToConsume) {
+consumeInventoryItem(herbToConsume);
+localStorage.setItem("catData", JSON.stringify(player));
+if (typeof saveAccount === 'function') saveAccount();
+loadInventory();
+}
+addLog('Ты оказал помощь. Пациент получит лечение в игре.');
+refreshMedicalViews();
+}).catch((error) => {
+console.error('Не удалось отправить лечение:', error);
+addLog('Не удалось отправить помощь. Проверь подключение; трава не потрачена.');
+refreshMedicalViews();
+});
 }
 }
 
@@ -2249,8 +2257,21 @@ function listenTreatments() {
 if (!myOnlineRef) return;
 myOnlineRef.child('treatments').on('child_added', (snap) => {
 const t = snap.val();
+if (!t) {
 snap.ref.remove();
-if (t) applyTreatment(t);
+return;
+}
+myOnlineRef.child('condition').once('value').then((conditionSnapshot) => {
+const latestCondition = conditionSnapshot.val();
+if (latestCondition) {
+player.condition = Object.assign({}, player.condition || {}, latestCondition);
+}
+applyTreatment(t);
+return snap.ref.remove();
+}).catch((error) => {
+console.error('Не удалось применить входящее лечение:', error);
+addLog('Не удалось применить помощь. Попробуй перезайти в игру.');
+});
 });
 }
 
