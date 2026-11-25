@@ -62,16 +62,11 @@ if (data.password !== passHash) {
 errorEl.textContent = 'Неверный пароль';
 return;
 }
-if (data.password !== passHash) {
-errorEl.textContent = 'Неверный пароль';
-return;
-}
 if ((data.catData.health || 0) <= 0) {
 errorEl.textContent = 'Этот персонаж мёртв';
 return;
 }
 // Успешный вход
-localStorage.setItem('catData', JSON.stringify(data.catData));
 localStorage.setItem('catData', JSON.stringify(data.catData));
 localStorage.setItem('playerId', data.playerId);
 localStorage.setItem('numericId', data.numericId || data.catData.numericId || '00');
@@ -113,6 +108,7 @@ name: name,
 gender: document.getElementById('catGender').value,
 color: selectedColor,
 eyes: selectedEyes,
+pattern: selectedPattern,
 role: document.getElementById('catRole').value,
 numericId: numericId,
 login: login,
@@ -152,7 +148,7 @@ localStorage.setItem('catData', JSON.stringify(catData));
 localStorage.setItem('playerId', playerId);
 localStorage.setItem('numericId', numericId);
 localStorage.setItem('currentLogin', login);
-window.location.href = 'forest.html';
+window.location.href = 'locations/forest.html';
 }).catch((err) => {
 errorEl.textContent = 'Ошибка регистрации: ' + err.message;
 });
@@ -162,13 +158,51 @@ errorEl.textContent = 'Ошибка регистрации: ' + err.message;
 // ===== АВТОСОХРАНЕНИЕ В FIREBASE =====
 function saveAccount() {
 const login = localStorage.getItem('currentLogin');
-if (!login) return;
-if ((player.health || 0) <= 0) return; // не сохраняем мёртвого
-accountsRef.child(login).update({
-catData: player
-});
-
+if (!login) return Promise.resolve(false);
+if ((player.health || 0) <= 0) return Promise.resolve(false);
+const currentLocation = typeof getCurrentLocation === 'function' ? getCurrentLocation() : 'Неизвестно';
+if (currentLocation !== 'Неизвестно') player.location = currentLocation;
+const accountRef = accountsRef.child(login);
+return accountRef.once('value').then((snapshot) => {
+const account = snapshot.val();
+if (!player.skin && account && account.catData && account.catData.skin) {
+player.skin = account.catData.skin;
 }
+localStorage.setItem('catData', JSON.stringify(player));
+return accountRef.update({ catData: player });
+}).then(() => true).catch((error) => {
+console.error('Не удалось сохранить персонажа в аккаунт:', error);
+throw error;
+});
+}
+
+function getSavedGameLocation(catData) {
+const locationMap = {
+'Лес-01': 'locations/forest.html',
+'Лес-04': 'locations/forest2.html',
+'Река-02': 'locations/river.html',
+'тропа': 'locations/path.html',
+'центр': 'locations/centre.html',
+'Бескрайние звёздные пустоши': 'locations/star-wastes.html',
+'лужайка': 'locations/lawn.html',
+'целитель': 'locations/healden.html',
+'лидерская': 'locations/leaderden.html',
+'старейшины': 'locations/elderden.html',
+'ученики': 'locations/studentden.html',
+'бревно': 'locations/driedlog.html',
+'детская': 'locations/kitden.html',
+'пещерка': 'locations/litlecawe.html',
+'мховаяямка': 'locations/mossmink.html',
+'скала': 'locations/sharprock.html',
+'пещеры': 'locations/suncaves.html',
+'воины': 'locations/warriorden.html',
+'???': 'locations/moonstone.html',
+'пещера трав-08': 'locations/herb-cave.html',
+'Лагерь': 'locations/camp.html'
+};
+return locationMap[catData && catData.location] || 'locations/forest.html';
+}
+
 // ===== ЗАГРУЗКА СОХРАНЕНИЯ =====
 function loadGame() {
 const login = localStorage.getItem('currentLogin');
@@ -179,11 +213,18 @@ accountsRef.child(login).once('value', (snap) => {
 const data = snap.val();
 if (data && data.catData) {
 localStorage.setItem('catData', JSON.stringify(data.catData));
+window.location.href = getSavedGameLocation(data.catData);
+} else if (save) {
+window.location.href = getSavedGameLocation(JSON.parse(save));
+} else {
+alert('Сохранение не найдено!');
 }
-window.location.href = 'forest.html';
+}).catch((error) => {
+console.error('Не удалось загрузить сохранение:', error);
+alert('Не удалось загрузить сохранение. Проверь подключение и попробуй снова.');
 });
 } else if (save) {
-window.location.href = 'forest.html';
+window.location.href = getSavedGameLocation(JSON.parse(save));
 } else {
 alert('Сохранение не найдено!');
 }
@@ -192,12 +233,21 @@ alert('Сохранение не найдено!');
 // ===== ВЫХОД =====
 function logoutAccount() {
 if (confirm('Выйти из аккаунта?')) {
+const finishLogout = () => {
 if (typeof myOnlineRef !== 'undefined' && myOnlineRef) myOnlineRef.remove();
 localStorage.removeItem('currentLogin');
 localStorage.removeItem('catData');
 localStorage.removeItem('playerId');
 localStorage.removeItem('numericId');
 window.location.href = 'index.html';
+};
+if (typeof saveAccount === 'function') {
+saveAccount().then(finishLogout).catch(() => {
+alert('Не удалось сохранить персонажа. Проверь подключение и попробуй выйти ещё раз.');
+});
+} else {
+finishLogout();
+}
 }
 }
 
@@ -228,6 +278,28 @@ document.getElementById('profile-name').textContent = p.name || '???';
 const catImg = document.getElementById('profile-cat');
 if (catImg) catImg.src = p.skin || getCatImage(p.color || 'полосатый');
 
+// Раскраска в профиле
+let profPattern = document.getElementById('profile-pattern');
+if (!profPattern) {
+profPattern = document.createElement('img');
+profPattern.id = 'profile-pattern';
+profPattern.style.position = 'absolute';
+profPattern.style.top = '0';
+profPattern.style.left = '0';
+profPattern.style.width = '300px';
+profPattern.style.pointerEvents = 'none';
+profPattern.style.zIndex = '1.5';
+const wrap = document.querySelector('.profile-cat-wrapper');
+if (wrap) wrap.appendChild(profPattern);
+}
+const patternSrc = getPatternImage(p.pattern || 'однотонный');
+if (patternSrc) {
+profPattern.src = patternSrc;
+profPattern.style.display = 'block';
+} else {
+profPattern.style.display = 'none';
+}
+
 // Глаза
 const eyesImg = document.getElementById('profile-eyes');
 if (eyesImg) {
@@ -255,32 +327,9 @@ function goToGame() {
 const save = localStorage.getItem('catData');
 if (save) {
 const p = JSON.parse(save);
-const locationMap = {
-'Лес-01': 'forest.html',
-'Лес-04': 'forest2.html',
-'Река-02': 'river.html',
-'тропа': 'path.html',
-'центр': 'centre.html',
-'лужайка': 'lawn.html',
-'целитель': 'healden.html',
-'лидерская': 'leaderden.html',
-'старейшины': 'elderden.html',
-'ученики': 'studentden.html',
-'бревно': 'driedlog.html',
-'детская': 'kitden.html',
-'пещерка': 'litlecawe.html',
-'мховаяяма': 'mossmink.html',
-'скала': 'sharprock.html',
-'пещеры': 'suncaves.html',
-'воины': 'warriorden.html',
-'???': 'moonstone.html',
-'пещера трав-08': 'herb-cave.html',
-'Лагерь': 'camp.html'
-};
-const url = locationMap[p.location] || 'forest.html';
-window.location.href = url;
+window.location.href = getSavedGameLocation(p);
 } else {
-window.location.href = 'forest.html';
+window.location.href = 'locations/forest.html';
 }
 }
 
@@ -325,6 +374,47 @@ container.appendChild(btn);
 }
 
 const EYE_COLORS_TEXT = ['янтарные', 'зелёные', 'голубые', 'жёлтые', 'синие', 'серые', 'карие'];
+const PATTERN_TEXT = ['однотонный', 'полоски', 'розетки', 'пятна', 'мраморный', 'черепаший'];
+let selectedPattern = 'однотонный';
+
+// Карта: русское имя раскраски → английский ключ для файла
+const PATTERN_KEYS = {
+'однотонный': null,
+'полоски': 'striped',
+'розетки': 'rosette',
+'пятна': 'spotted',
+'мраморный': 'marble',
+'черепаший': 'tortie'
+};
+
+// Карта: русский цвет → английский ключ
+const COLOR_KEYS = {
+'рыжий': 'red',
+'серый': 'gray',
+'чёрный': 'black',
+'белый': 'white',
+'черепаховый': 'tortoiseshell',
+'полосатый': 'tabby'
+};
+
+function getCatImage(color) {
+const colorKey = COLOR_KEYS[color] || 'tabby';
+return `images/cat-${colorKey}.png`;
+}
+
+function getPatternImage(pattern) {
+const patternKey = PATTERN_KEYS[pattern];
+if (!patternKey) return null;
+return `images/pattern-${patternKey}.png`;
+}
+
+// Получить путь картинки кота по цвету и раскраске
+function getCatPatternImage(color, pattern) {
+const colorKey = COLOR_KEYS[color] || 'tabby';
+const patternKey = PATTERN_KEYS[pattern];
+if (!patternKey) return `images/cat-${colorKey}.png`;
+return `images/cat-${colorKey}-${patternKey}.png`;
+}
 function buildEyesOptions() {
 const container = document.getElementById('eyes-options');
 if (!container) return;
@@ -352,23 +442,34 @@ updatePreview();
 
 function updatePreview() {
 const previewCat = document.getElementById('preview-cat');
+const previewPattern = document.getElementById('preview-pattern');
 const previewEyes = document.getElementById('preview-eyes');
 const previewName = document.getElementById('preview-name');
 const previewTitle = document.getElementById('preview-title');
 
-if (previewCat) previewCat.src = CAT_COLORS[selectedColor] || CAT_COLORS['полосатый'];
+if (previewCat) previewCat.src = getCatImage(selectedColor);
+if (previewPattern) {
+const patternSrc = getPatternImage(selectedPattern);
+if (patternSrc) {
+previewPattern.src = patternSrc;
+previewPattern.style.display = 'block';
+} else {
+previewPattern.style.display = 'none';
+}
+}
 if (previewEyes) previewEyes.src = EYE_COLORS[selectedEyes] || EYE_COLORS['янтарные'];
 
 const nameInput = document.getElementById('catName');
 const roleInput = document.getElementById('catRole');
 if (previewName) previewName.textContent = (nameInput && nameInput.value) || 'Имя кота';
-if (previewTitle) previewTitle.textContent = (roleInput && roleInput.value) || 'котёнок';
+if (previewTitle) previewTitle.textContent =
+((roleInput && roleInput.value) || 'котёнок') + ' • ' + selectedPattern;
 }
-
 // Живое обновление при вводе имени/роли
 document.addEventListener('DOMContentLoaded', () => {
 buildColorOptions();
 buildEyesOptions();
+buildPatternOptions();
 
 const nameInput = document.getElementById('catName');
 const roleInput = document.getElementById('catRole');

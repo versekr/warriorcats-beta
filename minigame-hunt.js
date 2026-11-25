@@ -85,8 +85,7 @@ function spawnMouse() {
     mouse.style.top = y + '%';
     
     // Случайная мышь
-    const mice = ['🐭', '🐁', '🐀'];
-    mouse.textContent = mice[Math.floor(Math.random() * mice.length)];
+    mouse.innerHTML = `<img src="${GAME_ICONS.mouse}" alt="" style="width:56px;height:56px;object-fit:contain;">`;
     
     // Время жизни — 1.5 сек, потом убегает
     mouse.dataset.spawnTime = Date.now();
@@ -107,7 +106,7 @@ function spawnMouse() {
         updateHuntHUD();
         
         // Визуальный эффект
-        mouse.textContent = '✨';
+        mouse.innerHTML = `<img src="${GAME_ICONS.sparkle}" alt="" style="width:56px;height:56px;object-fit:contain;">`;
         mouse.style.transform = 'scale(1.5)';
         mouse.style.opacity = '0';
         

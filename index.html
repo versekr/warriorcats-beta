@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Podkova:wght@400;600;700&family=PT+Sans:wght@400;700&family=PT+Sans+Caption:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="menu-bg">
 <h1>Коты Воители</h1>
 <h2>Бета версия</h2>
 
@@ -62,6 +62,9 @@
 <label>Глаза:</label><br>
 <div id="eyes-options" class="options-row"></div>
 
+<label>Раскраска:</label><br>
+<div id="pattern-options" class="options-row"></div>
+
 <button onclick="saveCharacter()">Создать кота и начать игру!</button>
 <button onclick="showStart()" style="margin-left:10px;background:#666;">Назад</button>
 <div id="register-error" style="color:#ff6b6b;margin-top:10px;font-weight:bold;"></div>
@@ -72,6 +75,7 @@
 <h3>Предпросмотр</h3>
 <div class="preview-cat-wrapper">
 <img id="preview-cat" src="images/cat-tabby.png">
+<img id="preview-pattern" src="">
 <img id="preview-eyes" src="images/eyes-amber.png">
 </div>
 <div id="preview-name" class="preview-name">Имя кота</div>
